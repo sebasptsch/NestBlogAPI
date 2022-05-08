@@ -166,7 +166,6 @@ describe('App e2e', () => {
       const dto: CreatePostDto = {
         title: 'first post',
         summary: 'first summary',
-        slug: 'test-slug',
         content: {
           node: {
             value: 'hello',
