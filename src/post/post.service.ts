@@ -15,7 +15,13 @@ export class PostService {
   // get all posts
 
   async getPosts(userId?: number | undefined) {
-    if (userId) {
+    if (!userId) {
+      return this.prisma.post.findMany({
+        where: {
+          status: DraftStatus.PUBLISHED,
+        },
+      });
+    } else {
       return this.prisma.post.findMany({
         where: {
           OR: [
@@ -27,12 +33,6 @@ export class PostService {
               status: DraftStatus.PUBLISHED,
             },
           ],
-        },
-      });
-    } else {
-      return this.prisma.post.findMany({
-        where: {
-          status: DraftStatus.PUBLISHED,
         },
       });
     }
@@ -47,6 +47,13 @@ export class PostService {
     const post = await this.prisma.post.create({
       data: {
         ...dto,
+        slug: dto.title
+          .toLowerCase()
+          .replace(
+            /[^a-zA-Z0-9]+(.)/g,
+            (m, chr) => '-' + chr,
+          )
+          .trim(),
         user: {
           connect: { id: userId },
         },
@@ -62,7 +69,6 @@ export class PostService {
     postId: number,
     userId?: number,
   ) {
-    // TODO: Filter by unpublished posts and show when it belongs to the user and unpublished
     if (userId) {
       const post =
         await this.prisma.post.findFirst({

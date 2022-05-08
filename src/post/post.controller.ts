@@ -10,7 +10,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { OptionalJwtAuthGuard } from '../auth/guard/optionalJwt.guard';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import {
@@ -25,7 +24,7 @@ export class PostController {
   constructor(private postService: PostService) {}
 
   // get all posts
-  @UseGuards(OptionalJwtAuthGuard)
+
   @Get()
   getPosts(@GetUser('id') userId: number) {
     return this.postService.getPosts(userId);
@@ -45,7 +44,7 @@ export class PostController {
   }
 
   // get single post
-  @UseGuards(OptionalJwtAuthGuard)
+
   @Get(':id')
   getPostById(
     @Param('id', ParseIntPipe) postId: number,
@@ -57,7 +56,6 @@ export class PostController {
     );
   }
 
-  @UseGuards(OptionalJwtAuthGuard)
   @Get(':slug')
   getPostBySlug(
     @Param('slug') postSlug: string,

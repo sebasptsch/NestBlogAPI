@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { DraftStatus } from '@prisma/client';
 import {
   IsEnum,
@@ -8,26 +9,17 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
+import { CreatePostDto } from './create-post';
 
-export class EditPostDto {
-  @IsString()
-  @IsOptional()
-  title?: string;
-
-  @IsString()
-  @IsOptional()
-  @Matches(/^[a-z0-9]+(?:[-/][a-z0-9]+)*$/)
-  slug?: string;
-
-  @IsString()
-  @IsOptional()
-  summary?: string;
-
-  @IsObject()
-  @IsOptional()
-  content?: object;
-
+export class EditPostDto extends PartialType(
+  CreatePostDto,
+) {
   @IsEnum(DraftStatus)
   @IsOptional()
   status?: DraftStatus;
+
+  @Matches(/^[a-z0-9]+(?:[-/][a-z0-9]+)*$/)
+  @IsString()
+  @IsOptional()
+  slug?: string;
 }
