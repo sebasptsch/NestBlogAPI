@@ -18,8 +18,7 @@ export class OptionalJwtAuthGuard extends AuthGuard(
       ) {
         return true;
       }
-      console.log('error', error);
-      // return true;
+      throw error;
     }
 
     return true;
