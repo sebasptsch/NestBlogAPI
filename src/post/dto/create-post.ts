@@ -12,11 +12,6 @@ export class CreatePostDto {
   @IsNotEmpty()
   title: string;
 
-  @Matches(/^[a-z0-9]+(?:[-/][a-z0-9]+)*$/)
-  @IsString()
-  @IsNotEmpty()
-  slug: string;
-
   @IsString()
   @IsNotEmpty()
   summary: string;
