@@ -25,11 +25,11 @@ export class AuthController {
 
   @Post('logout')
   async logout(
-    @Res({ passthrough: true })
-    response: Response,
+    @Req()
+    request: Request,
   ) {
-    response.cookie('token', '', {
-      expires: new Date(),
+    request.session.destroy(() => {
+      return 'Success';
     });
   }
 
@@ -39,18 +39,19 @@ export class AuthController {
     @Res({ passthrough: true })
     response: Response,
   ) {
-    response.cookie(
-      'token',
-      (await this.authService.signup(dto))
-        .access_token,
-      {
-        expires: new Date(
-          new Date().getTime() + 1000 * 900,
-        ),
-        sameSite: 'strict',
-        domain: 'localhost',
-      },
-    );
+    return this.authService.signup(dto);
+    // response.cookie(
+    //   'token',
+    //   (await this.authService.signup(dto))
+    //     .access_token,
+    //   {
+    //     expires: new Date(
+    //       new Date().getTime() + 1000 * 900,
+    //     ),
+    //     sameSite: 'strict',
+    //     domain: 'localhost',
+    //   },
+    // );
   }
 
   @UseGuards(LocalAuthGuard)
@@ -60,19 +61,7 @@ export class AuthController {
     @Res({ passthrough: true })
     response: Response,
   ) {
-    // return this.authService.signin(req.user);
-    response.cookie(
-      'token',
-      (await this.authService.signin(req.user))
-        .access_token,
-      {
-        expires: new Date(
-          new Date().getTime() + 1000 * 900,
-        ),
-        sameSite: 'strict',
-        domain: 'localhost',
-      },
-    );
+    return req.user;
   }
 
   @UseGuards(GithubAuthGuard)
@@ -86,19 +75,7 @@ export class AuthController {
     @Res({ passthrough: true })
     response: Response,
   ) {
-    // return this.authService.signin(req.user);
-    response.cookie(
-      'token',
-      (await this.authService.signin(req.user))
-        .access_token,
-      {
-        expires: new Date(
-          new Date().getTime() + 1000 * 900,
-        ),
-        sameSite: 'strict',
-        domain: 'localhost',
-      },
-    );
+    return req.user;
   }
 
   @UseGuards(DiscordAuthGuard)
@@ -112,18 +89,6 @@ export class AuthController {
     @Res({ passthrough: true })
     response: Response,
   ) {
-    // return this.authService.signin(req.user);
-    response.cookie(
-      'token',
-      (await this.authService.signin(req.user))
-        .access_token,
-      {
-        expires: new Date(
-          new Date().getTime() + 1000 * 900,
-        ),
-        sameSite: 'strict',
-        domain: 'localhost',
-      },
-    );
+    return req.user;
   }
 }

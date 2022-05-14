@@ -3,7 +3,6 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
-import { PopulateUserMiddleware } from '../auth/middleware';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 

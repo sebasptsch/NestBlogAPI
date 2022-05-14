@@ -11,13 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from '../auth/decorator';
-import { JwtGuard } from '../auth/guard';
 import {
   CreatePostDto,
   EditPostDto,
 } from './dto';
 import { PostService } from './post.service';
 import { Request } from 'express';
+import { SessionGuard } from 'src/auth/guard';
 
 @Controller('posts')
 export class PostController {
@@ -31,7 +31,7 @@ export class PostController {
   }
 
   // create post
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Post()
   createPost(
     @GetUser('id') userId: number,
@@ -68,7 +68,7 @@ export class PostController {
   }
 
   // edit single post
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Patch(':id')
   editPostById(
     @GetUser('id') userId: number,
@@ -83,7 +83,7 @@ export class PostController {
   }
 
   // delete single post
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Delete(':id')
   deletePostById(
     @GetUser('id') userId: number,

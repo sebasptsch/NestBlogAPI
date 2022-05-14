@@ -9,8 +9,6 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
-import { PopulateUserMiddleware } from './auth/middleware';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -19,17 +17,10 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    JwtModule.register({}),
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(PopulateUserMiddleware)
-      .forRoutes('posts')
-      .apply(PopulateUserMiddleware)
-      .forRoutes('auth/*');
-  }
+  configure(consumer: MiddlewareConsumer) {}
 }

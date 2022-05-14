@@ -7,7 +7,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { userInfo } from 'os';
 import { Profile as DiscordProfile } from 'passport-discord';
@@ -18,7 +17,6 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private config: ConfigService,
-    private jwt: JwtService,
   ) {}
 
   async signup(
@@ -43,7 +41,7 @@ export class AuthService {
 
     const hash = await argon.hash(dto.password);
     if (existingUser?.id) {
-      const user =
+      const provider =
         await this.prisma.provider.create({
           data: {
             uid: dto.username,
@@ -55,10 +53,14 @@ export class AuthService {
               },
             },
           },
+          include: {
+            user: true,
+          },
         });
-      return this.signToken(user.id);
+      // return this.signToken(user.id);
+      return provider.user;
     } else {
-      const user =
+      const provider =
         await this.prisma.provider.create({
           data: {
             uid: dto.username,
@@ -70,28 +72,13 @@ export class AuthService {
               },
             },
           },
+          include: {
+            user: true,
+          },
         });
-      return this.signToken(user.id);
+      // return this.signToken(user.id);
+      return provider.user;
     }
-  }
-
-  async signin(user: { id: number }) {
-    return this.signToken(user.id);
-  }
-
-  async signToken(
-    userId: number,
-  ): Promise<{ access_token: string }> {
-    const payload = {
-      sub: userId,
-    };
-
-    const secret = this.config.get('JWT_SECRET');
-    const access_token = await this.jwt.signAsync(
-      payload,
-      { secret, expiresIn: '15m' },
-    );
-    return { access_token };
   }
 
   async validateDiscordUser(
@@ -210,7 +197,6 @@ export class AuthService {
     username: string,
     password: string,
   ) {
-    // console.log({ email, password });
     const account =
       await this.prisma.provider.findFirst({
         where: {

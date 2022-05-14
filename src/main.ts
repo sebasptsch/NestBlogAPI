@@ -1,6 +1,8 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
+import * as passport from 'passport';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -18,6 +20,15 @@ async function bootstrap() {
     },
   );
   app.use(cookieParser('testSecret'));
+  app.use(
+    session({
+      secret: 'keyboard',
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

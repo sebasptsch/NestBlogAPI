@@ -40,7 +40,6 @@ export class GithubStrategy extends PassportStrategy(
     profile: Profile,
     done,
   ): Promise<any> {
-    console.log(req.user);
     const user =
       await this.authService.validateGithubUser(
         profile,
