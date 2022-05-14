@@ -9,8 +9,11 @@ async function bootstrap() {
     {
       cors: {
         origin: 'http://localhost:3002',
-        allowedHeaders: '',
+        allowedHeaders:
+          'X-Requested-With,content-type',
         credentials: true,
+        methods:
+          'GET, POST, OPTIONS, PUT, PATCH, DELETE',
       },
     },
   );

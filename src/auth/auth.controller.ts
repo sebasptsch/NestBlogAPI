@@ -23,6 +23,16 @@ import {
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Post('logout')
+  async logout(
+    @Res({ passthrough: true })
+    response: Response,
+  ) {
+    response.cookie('token', '', {
+      expires: new Date(),
+    });
+  }
+
   @Post('register')
   async signup(
     @Body() dto: AuthDto,
@@ -34,7 +44,9 @@ export class AuthController {
       (await this.authService.signup(dto))
         .access_token,
       {
-        maxAge: 900,
+        expires: new Date(
+          new Date().getTime() + 1000 * 900,
+        ),
         sameSite: 'strict',
         domain: 'localhost',
       },
@@ -54,7 +66,9 @@ export class AuthController {
       (await this.authService.signin(req.user))
         .access_token,
       {
-        maxAge: 900,
+        expires: new Date(
+          new Date().getTime() + 1000 * 900,
+        ),
         sameSite: 'strict',
         domain: 'localhost',
       },
@@ -78,7 +92,9 @@ export class AuthController {
       (await this.authService.signin(req.user))
         .access_token,
       {
-        maxAge: 900,
+        expires: new Date(
+          new Date().getTime() + 1000 * 900,
+        ),
         sameSite: 'strict',
         domain: 'localhost',
       },
@@ -102,7 +118,9 @@ export class AuthController {
       (await this.authService.signin(req.user))
         .access_token,
       {
-        maxAge: 900,
+        expires: new Date(
+          new Date().getTime() + 1000 * 900,
+        ),
         sameSite: 'strict',
         domain: 'localhost',
       },
