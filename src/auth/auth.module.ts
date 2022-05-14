@@ -2,8 +2,12 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategy';
-import { LocalStrategy } from './strategy/local.strategy';
+import {
+  JwtStrategy,
+  LocalStrategy,
+  GithubStrategy,
+  DiscordStrategy,
+} from './strategy';
 
 @Module({
   imports: [JwtModule.register({})],
@@ -12,6 +16,8 @@ import { LocalStrategy } from './strategy/local.strategy';
     AuthService,
     JwtStrategy,
     LocalStrategy,
+    GithubStrategy,
+    DiscordStrategy,
   ],
 })
 export class AuthModule {}

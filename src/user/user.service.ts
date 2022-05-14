@@ -16,7 +16,6 @@ export class UserService {
         ...dto,
       },
     });
-    delete user.password;
 
     return user;
   }

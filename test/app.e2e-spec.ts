@@ -131,7 +131,6 @@ describe('App e2e', () => {
       it('should edit user', () => {
         const dto: EditUserDto = {
           name: 'Sebastian',
-          username: 'sebasptsch1',
         };
         return pactum
           .spec()
@@ -141,8 +140,7 @@ describe('App e2e', () => {
           })
           .withBody(dto)
           .expectStatus(200)
-          .expectBodyContains(dto.name)
-          .expectBodyContains(dto.username);
+          .expectBodyContains(dto.name);
       });
     });
   });

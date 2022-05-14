@@ -28,6 +28,8 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(PopulateUserMiddleware)
-      .forRoutes('posts');
+      .forRoutes('posts')
+      .apply(PopulateUserMiddleware)
+      .forRoutes('auth/*');
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
+import { Request } from 'express';
 import {
   ExtractJwt,
   Strategy,
@@ -17,21 +18,27 @@ export class JwtStrategy extends PassportStrategy(
     private prisma: PrismaService,
   ) {
     super({
-      jwtFromRequest:
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        JwtStrategy.extractJwt,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       secretOrKey: config.get('JWT_SECRET'),
     });
   }
 
-  async validate(payload: {
-    sub: number;
-    username: string;
-  }) {
+  async validate(payload: { sub: number }) {
     const user =
       await this.prisma.user.findUnique({
         where: { id: payload.sub },
       });
-    delete user.password;
     return user;
+  }
+
+  private static extractJwt(
+    req: Request,
+  ): string | null {
+    if (req.cookies.token) {
+      return req.cookies.token;
+    }
   }
 }

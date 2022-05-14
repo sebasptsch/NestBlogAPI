@@ -13,13 +13,30 @@ datasource db {
 model User {
   id        Int @id @default(autoincrement())
   name      String?
-  username     String @unique
-  password  String
+  accounts  Provider[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]
 
   @@map("users")
+}
+
+enum AccountType {
+  DISCORD
+  GITHUB
+  LOCAL
+}
+
+model Provider {
+  id        Int @id @default(autoincrement())
+  uid    String
+  provider  AccountType
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  @@map("providers")
 }
 
 model Post {
@@ -29,7 +46,7 @@ model Post {
   title     String
   summary   String
   content   Json
-  user    User @relation(fields: [userId], references: [id])
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

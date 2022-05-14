@@ -1,30 +1,111 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import passport from 'passport';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
-import { LocalAuthGuard } from './guard';
+import {
+  DiscordAuthGuard,
+  GithubAuthGuard,
+  LocalAuthGuard,
+} from './guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('signup')
-  signup(@Body() dto: AuthDto) {
-    return this.authService.signup(dto);
+  @Post('register')
+  async signup(
+    @Body() dto: AuthDto,
+    @Res({ passthrough: true })
+    response: Response,
+  ) {
+    response.cookie(
+      'token',
+      (await this.authService.signup(dto))
+        .access_token,
+      {
+        maxAge: 900,
+        sameSite: 'strict',
+        domain: 'localhost',
+      },
+    );
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  signin(@Req() req) {
-    // console.log(req.user);
-    return this.authService.signin(req.user);
+  async signin(
+    @Req() req,
+    @Res({ passthrough: true })
+    response: Response,
+  ) {
+    // return this.authService.signin(req.user);
+    response.cookie(
+      'token',
+      (await this.authService.signin(req.user))
+        .access_token,
+      {
+        maxAge: 900,
+        sameSite: 'strict',
+        domain: 'localhost',
+      },
+    );
+  }
+
+  @UseGuards(GithubAuthGuard)
+  @Get('github')
+  githubSignIn(@Req() req) {}
+
+  @UseGuards(GithubAuthGuard)
+  @Get('github/callback')
+  async githubSignInCallback(
+    @Req() req,
+    @Res({ passthrough: true })
+    response: Response,
+  ) {
+    // return this.authService.signin(req.user);
+    response.cookie(
+      'token',
+      (await this.authService.signin(req.user))
+        .access_token,
+      {
+        maxAge: 900,
+        sameSite: 'strict',
+        domain: 'localhost',
+      },
+    );
+  }
+
+  @UseGuards(DiscordAuthGuard)
+  @Get('discord')
+  discordSignIn(@Req() req) {}
+
+  @UseGuards(DiscordAuthGuard)
+  @Get('discord/callback')
+  async discordSignInCallback(
+    @Req() req,
+    @Res({ passthrough: true })
+    response: Response,
+  ) {
+    // return this.authService.signin(req.user);
+    response.cookie(
+      'token',
+      (await this.authService.signin(req.user))
+        .access_token,
+      {
+        maxAge: 900,
+        sameSite: 'strict',
+        domain: 'localhost',
+      },
+    );
   }
 }
