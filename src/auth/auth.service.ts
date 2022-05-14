@@ -25,11 +25,14 @@ export class AuthService {
     try {
       const user = await this.prisma.user.create({
         data: {
-          email: dto.email,
+          username: dto.username,
           password: hash,
         },
       });
-      return this.signToken(user.id, user.email);
+      return this.signToken(
+        user.id,
+        user.username,
+      );
     } catch (error) {
       if (
         error instanceof
@@ -45,40 +48,20 @@ export class AuthService {
     }
   }
 
-  async signin(dto: AuthDto) {
-    const user =
-      await this.prisma.user.findUnique({
-        where: {
-          email: dto.email,
-        },
-      });
-
-    if (!user) {
-      throw new UnauthorizedException(
-        'Credentials Incorrect',
-      );
-    }
-
-    const pwMatches = await argon.verify(
-      user.password,
-      dto.password,
-    );
-
-    if (!pwMatches) {
-      throw new UnauthorizedException(
-        'Credentials Incorrect',
-      );
-    }
-    return this.signToken(user.id, user.email);
+  async signin(user: {
+    username: string;
+    id: number;
+  }) {
+    return this.signToken(user.id, user.username);
   }
 
   async signToken(
     userId: number,
-    email: string,
+    username: string,
   ): Promise<{ access_token: string }> {
     const payload = {
       sub: userId,
-      email,
+      username,
     };
 
     const secret = this.config.get('JWT_SECRET');
@@ -87,5 +70,32 @@ export class AuthService {
       { secret, expiresIn: '15m' },
     );
     return { access_token };
+  }
+
+  async validateLocalUser(
+    username: string,
+    password: string,
+  ) {
+    // console.log({ email, password });
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          username,
+        },
+      });
+    if (!user) {
+      return null;
+    }
+
+    const pwMatches = await argon.verify(
+      user.password,
+      password,
+    );
+
+    if (pwMatches) {
+      delete user.password;
+      return user;
+    }
+    return null;
   }
 }
