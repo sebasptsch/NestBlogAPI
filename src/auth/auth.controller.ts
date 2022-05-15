@@ -18,6 +18,7 @@ import {
   GithubAuthGuard,
   LocalAuthGuard,
 } from './guard';
+import { RecaptchaGuard } from './guard/recaptcha.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,41 +28,32 @@ export class AuthController {
   async logout(
     @Req()
     request: Request,
+    @Res()
+    response: Response,
   ) {
-    request.session.destroy(() => {
-      return 'Success';
-    });
+    request.session.destroy(() => {});
   }
 
+  @UseGuards(RecaptchaGuard)
   @Post('register')
   async signup(
     @Body() dto: AuthDto,
-    @Res({ passthrough: true })
+    @Res()
     response: Response,
   ) {
     return this.authService.signup(dto);
-    // response.cookie(
-    //   'token',
-    //   (await this.authService.signup(dto))
-    //     .access_token,
-    //   {
-    //     expires: new Date(
-    //       new Date().getTime() + 1000 * 900,
-    //     ),
-    //     sameSite: 'strict',
-    //     domain: 'localhost',
-    //   },
-    // );
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(RecaptchaGuard, LocalAuthGuard)
   @Post('signin')
   async signin(
     @Req() req,
-    @Res({ passthrough: true })
+    @Res()
     response: Response,
   ) {
-    return req.user;
+    response.redirect(
+      'http://localhost:3002/users/me',
+    );
   }
 
   @UseGuards(GithubAuthGuard)
@@ -72,10 +64,12 @@ export class AuthController {
   @Get('github/callback')
   async githubSignInCallback(
     @Req() req,
-    @Res({ passthrough: true })
+    @Res()
     response: Response,
   ) {
-    return req.user;
+    response.redirect(
+      'http://localhost:3002/users/me',
+    );
   }
 
   @UseGuards(DiscordAuthGuard)
@@ -86,9 +80,11 @@ export class AuthController {
   @Get('discord/callback')
   async discordSignInCallback(
     @Req() req,
-    @Res({ passthrough: true })
+    @Res()
     response: Response,
   ) {
-    return req.user;
+    response.redirect(
+      'http://localhost:3002/users/me',
+    );
   }
 }

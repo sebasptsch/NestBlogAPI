@@ -1,4 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
@@ -12,17 +13,20 @@ async function bootstrap() {
       cors: {
         origin: 'http://localhost:3002',
         allowedHeaders:
-          'X-Requested-With,content-type',
+          'X-Requested-With,Content-Type',
         credentials: true,
         methods:
           'GET, POST, OPTIONS, PUT, PATCH, DELETE',
       },
     },
   );
-  app.use(cookieParser('testSecret'));
+  const config = app.get(ConfigService);
+  app.use(
+    cookieParser(config.get('COOKIE_SECRET')),
+  );
   app.use(
     session({
-      secret: 'keyboard',
+      secret: config.get('SESSION_SECRET'),
       resave: false,
       saveUninitialized: false,
     }),

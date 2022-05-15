@@ -56,7 +56,7 @@ export class PostController {
     );
   }
 
-  @Get(':slug')
+  @Get('slug/:slug')
   getPostBySlug(
     @Param('slug') postSlug: string,
     @GetUser('id') userId: number,

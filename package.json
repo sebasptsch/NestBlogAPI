@@ -8,12 +8,18 @@
   "scripts": {
     "db:dev:rm": "docker compose rm dev-db -s -f -v",
     "db:dev:up": "docker compose up dev-db -d",
+    "redis:test:rm": "docker compose rm test-redis -s -f -v",
+    "redis:test:up": "docker compose up test-redis -d",
+    "redis:dev:rm": "docker compose rm dev-redis -s -f -v",
+    "redis:dev:up": "docker compose up dev-redis -d",
     "prisma:dev:deploy": "prisma migrate deploy",
     "db:dev:restart": "yarn db:dev:rm && yarn db:dev:up && sleep 1 && yarn prisma:dev:deploy",
     "db:test:rm": "docker compose rm test-db -s -f -v",
     "db:test:up": "docker compose up test-db -d",
     "prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
     "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 1 && yarn prisma:test:deploy",
+    "redis:test:restart": "yarn redis:test:rm && yarn redis:test:up",
+    "redis:dev:restart": "yarn redis:dev:rm && yarn redis:dev:up",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -32,6 +38,7 @@
     "studio:dev": "dotenv -e .env -- prisma studio"
   },
   "dependencies": {
+    "@nestjs/axios": "^0.0.7",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
@@ -51,10 +58,12 @@
     "passport-discord": "^0.1.4",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
+    "react-icons": "^4.3.1",
     "redis": "^4.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "sharp": "^0.30.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -65,10 +74,12 @@
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.4",
     "@types/jest": "27.5.0",
+    "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
     "@types/passport-discord": "^0.1.5",
     "@types/passport-local": "^1.0.34",
     "@types/redis": "^4.0.11",
+    "@types/sharp": "^0.30.2",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

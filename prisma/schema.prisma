@@ -15,9 +15,10 @@ model User {
   name      String?
   accounts  Provider[]
   createdAt DateTime @default(now())
+  avatar    Image? @relation("avatar")
   updatedAt DateTime @updatedAt
   posts     Post[]
-
+  images Image[] @relation("uploader")
   @@map("users")
 }
 
@@ -52,6 +53,18 @@ model Post {
   updatedAt DateTime @updatedAt
 
   @@map("posts")
+}
+
+model Image {
+  id Int @id @default(autoincrement())
+  filename String
+  path String @unique
+  mimetype String
+  userId Int
+  user User @relation(name: "uploader", fields: [userId], references: [id])
+  avatarUser User? @relation(name: "avatar", fields: [avatarUserId], references: [id])
+  avatarUserId Int?
+  @@map("images")
 }
 
 enum DraftStatus {

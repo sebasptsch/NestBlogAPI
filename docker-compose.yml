@@ -11,3 +11,13 @@ services:
     ports:
       - '5433:5432'
     restart: unless-stopped
+  test-redis:
+    image: redis
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+  dev-redis:
+    image: redis
+    ports:
+      - '6380:6379'
+    restart: unless-stopped

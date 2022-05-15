@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
@@ -11,7 +12,14 @@ import {
 
 @Module({
   imports: [
-    PassportModule.register({ session: true }),
+    PassportModule.register({
+      session: true,
+      successRedirect:
+        'http://localhost:3002/users/me',
+      failureRedirect:
+        'http://localhost:3002/auth/signin',
+    }),
+    HttpModule,
   ],
   controllers: [AuthController],
   providers: [

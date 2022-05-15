@@ -92,7 +92,11 @@ export class AuthService {
           provider: 'DISCORD',
         },
         include: {
-          user: true,
+          user: {
+            include: {
+              avatar: true,
+            },
+          },
         },
       });
     if (!existingAccount) {
@@ -110,7 +114,11 @@ export class AuthService {
               },
             },
             include: {
-              user: true,
+              user: {
+                include: {
+                  avatar: true,
+                },
+              },
             },
           });
         return account.user;
@@ -128,7 +136,11 @@ export class AuthService {
               },
             },
             include: {
-              user: true,
+              user: {
+                include: {
+                  avatar: true,
+                },
+              },
             },
           });
         return account.user;
@@ -149,7 +161,11 @@ export class AuthService {
           provider: 'GITHUB',
         },
         include: {
-          user: true,
+          user: {
+            include: {
+              avatar: true,
+            },
+          },
         },
       });
     if (!existingAccount) {
@@ -166,7 +182,11 @@ export class AuthService {
               },
             },
             include: {
-              user: true,
+              user: {
+                include: {
+                  avatar: true,
+                },
+              },
             },
           });
         return account.user;
@@ -183,7 +203,11 @@ export class AuthService {
               },
             },
             include: {
-              user: true,
+              user: {
+                include: {
+                  avatar: true,
+                },
+              },
             },
           });
         return account.user;
@@ -204,7 +228,11 @@ export class AuthService {
           provider: 'LOCAL',
         },
         include: {
-          user: true,
+          user: {
+            include: {
+              avatar: true,
+            },
+          },
         },
       });
 

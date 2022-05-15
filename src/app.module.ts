@@ -9,6 +9,8 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { ImageModule } from './image/image.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -16,7 +18,9 @@ import { ConfigModule } from '@nestjs/config';
     PostModule,
     AuthModule,
     PrismaModule,
+    HttpModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    ImageModule,
   ],
   controllers: [],
   providers: [],
