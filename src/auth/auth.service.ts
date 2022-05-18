@@ -11,12 +11,14 @@ import { ConfigService } from '@nestjs/config';
 import { userInfo } from 'os';
 import { Profile as DiscordProfile } from 'passport-discord';
 import { Profile as GithubProfile } from 'passport-github2';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private config: ConfigService,
+    private jwtService: JwtService,
   ) {}
 
   async signup(
@@ -25,7 +27,7 @@ export class AuthService {
       id: number;
     },
   ) {
-    // generate the passowrd hash
+    // console.log('hello');
     const existingAccount =
       await this.prisma.provider.findFirst({
         where: {
@@ -249,5 +251,23 @@ export class AuthService {
       return account.user;
     }
     return null;
+  }
+
+  async login(user: any) {
+    // console.log('test1');
+    const payload = {
+      username: user.name,
+      sub: user.id,
+    };
+    // console.log(payload);
+    const response = {
+      access_token:
+        await this.jwtService.signAsync(payload, {
+          secret: this.config.get('JWT_SECRET'),
+          expiresIn: '15m',
+        }),
+    };
+    // console.log(response);
+    return response;
   }
 }

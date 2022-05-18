@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { JwtGuard } from 'src/auth/guard';
 import { GetUser } from '../auth/decorator';
-import { SessionGuard } from '../auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
 
@@ -17,7 +17,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @UseGuards(SessionGuard)
+  @UseGuards(JwtGuard)
   @Get('me')
   getMe(@GetUser() user: User) {
     return user;
@@ -30,13 +30,12 @@ export class UserController {
     return this.userService.getUser(userId);
   }
 
-  @UseGuards(SessionGuard)
+  @UseGuards(JwtGuard)
   @Patch()
   editUser(
     @GetUser('id') userId: number,
     @Body() dto: EditUserDto,
   ) {
-    console.log('edit called');
     return this.userService.editUser(userId, dto);
   }
 }

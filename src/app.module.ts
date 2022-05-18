@@ -11,6 +11,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ImageModule } from './image/image.module';
 import { HttpModule } from '@nestjs/axios';
+import { PopulateUserMiddleware } from './auth/middleware';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -21,10 +23,15 @@ import { HttpModule } from '@nestjs/axios';
     HttpModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ImageModule,
+    JwtModule.register({}),
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PopulateUserMiddleware)
+      .forRoutes('*');
+  }
 }

@@ -17,12 +17,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import ImageFileInterceptor from './interceptors/image.interceptor';
-import { SessionGuard } from 'src/auth/guard';
+// import { SessionGuard } from 'src/auth/guard';
 import { ImageService } from './image.service';
 import { GetUser } from 'src/auth/decorator';
 import { createReadStream } from 'fs';
 import { Response } from 'express';
 import { SharpPipe } from './pipes/processImage.pipe';
+import { JwtGuard } from 'src/auth/guard';
 
 @Controller('images')
 export class ImageController {
@@ -31,7 +32,7 @@ export class ImageController {
     private readonly images: ImageService,
   ) {}
 
-  @UseGuards(SessionGuard)
+  @UseGuards(JwtGuard)
   @Post()
   @UseInterceptors(
     ImageFileInterceptor({
@@ -86,7 +87,7 @@ export class ImageController {
     file.pipe(res);
   }
 
-  @UseGuards(SessionGuard)
+  @UseGuards(JwtGuard)
   @Get()
   async getBelongingImages(
     @GetUser('id') userId: number,
@@ -94,7 +95,7 @@ export class ImageController {
     return this.images.getBelongingImages(userId);
   }
 
-  @UseGuards(SessionGuard)
+  @UseGuards(JwtGuard)
   @Delete(':id')
   async deleteImage(
     @Param('id', ParseIntPipe) id: number,

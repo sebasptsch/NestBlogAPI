@@ -28,32 +28,31 @@ export class AuthController {
   async logout(
     @Req()
     request: Request,
-    @Res()
-    response: Response,
   ) {
-    request.session.destroy(() => {});
+    // request.session.destroy(() => {});
   }
 
-  @UseGuards(RecaptchaGuard)
+  // @UseGuards(RecaptchaGuard)
   @Post('register')
   async signup(
     @Body() dto: AuthDto,
     @Res()
     response: Response,
   ) {
+    // console.log('register called');
     return this.authService.signup(dto);
   }
 
-  @UseGuards(RecaptchaGuard, LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('signin')
   async signin(
     @Req() req,
-    @Res()
-    response: Response,
+    // @Res()
+    // response: Response,
   ) {
-    response.redirect(
-      'http://localhost:3002/users/me',
-    );
+    // console.log('request received');
+    return this.authService.login(req.user);
+    // return 'test3';
   }
 
   @UseGuards(GithubAuthGuard)
@@ -62,14 +61,8 @@ export class AuthController {
 
   @UseGuards(GithubAuthGuard)
   @Get('github/callback')
-  async githubSignInCallback(
-    @Req() req,
-    @Res()
-    response: Response,
-  ) {
-    response.redirect(
-      'http://localhost:3002/users/me',
-    );
+  async githubSignInCallback(@Req() req) {
+    return await this.authService.login(req.user);
   }
 
   @UseGuards(DiscordAuthGuard)
@@ -78,13 +71,7 @@ export class AuthController {
 
   @UseGuards(DiscordAuthGuard)
   @Get('discord/callback')
-  async discordSignInCallback(
-    @Req() req,
-    @Res()
-    response: Response,
-  ) {
-    response.redirect(
-      'http://localhost:3002/users/me',
-    );
+  async discordSignInCallback(@Req() req) {
+    return await this.authService.login(req.user);
   }
 }
