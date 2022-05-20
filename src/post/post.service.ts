@@ -1,8 +1,13 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { DraftStatus } from '@prisma/client';
+import {
+  DraftStatus,
+  Prisma,
+} from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   CreatePostDto,
@@ -13,6 +18,14 @@ import {
 export class PostService {
   constructor(private prisma: PrismaService) {}
   // get all posts
+
+  async getMyPosts(userId: number) {
+    return this.prisma.post.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
 
   async getPosts(userId?: number | undefined) {
     if (!userId) {
@@ -44,23 +57,36 @@ export class PostService {
     userId: number,
     dto: CreatePostDto,
   ) {
-    const post = await this.prisma.post.create({
-      data: {
-        ...dto,
-        slug: dto.title
-          .toLowerCase()
-          .replace(
-            /[^a-zA-Z0-9]+(.)/g,
-            (m, chr) => '-' + chr,
-          )
-          .trim(),
-        user: {
-          connect: { id: userId },
+    try {
+      const post = await this.prisma.post.create({
+        data: {
+          ...dto,
+          slug: dto.title
+            .toLowerCase()
+            .replace(
+              /[^a-zA-Z0-9]+(.)/g,
+              (m, chr) => '-' + chr,
+            )
+            .trim(),
+          user: {
+            connect: { id: userId },
+          },
         },
-      },
-    });
+      });
 
-    return post;
+      return post;
+    } catch (error) {
+      if (
+        error instanceof
+        PrismaClientKnownRequestError
+      ) {
+        if (error.code === 'P2002') {
+          throw new BadRequestException(
+            'Either your slug or title is not unique.',
+          );
+        }
+      }
+    }
   }
 
   // get single post

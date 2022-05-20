@@ -31,6 +31,12 @@ export class PostController {
     return this.postService.getPosts(userId);
   }
 
+  @UseGuards(SessionGuard)
+  @Get('me')
+  getMyPosts(@GetUser('id') userId: number) {
+    return this.postService.getMyPosts(userId);
+  }
+
   // create post
   @UseGuards(SessionGuard)
   @Post()

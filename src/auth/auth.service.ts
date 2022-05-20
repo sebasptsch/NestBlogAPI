@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
@@ -17,9 +18,8 @@ import { Profile as GithubProfile } from 'passport-github2';
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private config: ConfigService,
-  ) // private jwtService: JwtService,
-  {}
+    private config: ConfigService, // private jwtService: JwtService,
+  ) {}
 
   async signup(
     dto: AuthDto,
@@ -36,7 +36,7 @@ export class AuthService {
         },
       });
     if (existingAccount) {
-      throw new UnauthorizedException(
+      throw new BadRequestException(
         'Credentials taken',
       );
     }
@@ -56,7 +56,11 @@ export class AuthService {
             },
           },
           include: {
-            user: true,
+            user: {
+              include: {
+                avatar: true,
+              },
+            },
           },
         });
       // return this.signToken(user.id);
@@ -75,7 +79,11 @@ export class AuthService {
             },
           },
           include: {
-            user: true,
+            user: {
+              include: {
+                avatar: true,
+              },
+            },
           },
         });
       // return this.signToken(user.id);

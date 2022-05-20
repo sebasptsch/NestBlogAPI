@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Post,
+  Redirect,
   Req,
   Res,
   UseGuards,
@@ -34,53 +35,30 @@ export class AuthController {
 
   // @UseGuards(RecaptchaGuard)
   @Post('register')
-  async signup(
-    @Body() dto: AuthDto,
-    // @Res()
-    // response: Response,
-  ) {
-    // console.log('register called');
+  async signup(@Body() dto: AuthDto) {
     return this.authService.signup(dto);
   }
 
+  // @Redirect('http://localhost:3002/users/me')
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  async signin(
-    @Req() req,
-    // @Res()
-    // response: Response,
-  ) {
-    // console.log('request received');
-    // res.redirect(
-    //   'http://localhost:3002/users/me',
-    // );
-    // return 'test3';
-    return 'Success';
-  }
+  async signin() {}
 
   @UseGuards(GithubAuthGuard)
   @Get('github')
-  githubSignIn(@Req() req) {}
+  githubSignIn() {}
 
+  @Redirect('http://localhost:3002/users/me')
   @UseGuards(GithubAuthGuard)
   @Get('github/callback')
-  async githubSignInCallback(
-    @Req() req,
-    // @Res() res,
-  ) {
-    // res.redirect(
-    //   'http://localhost:3002/users/me',
-    // );
-    return 'Success';
-  }
+  async githubSignInCallback() {}
 
   @UseGuards(DiscordAuthGuard)
   @Get('discord')
-  discordSignIn(@Req() req) {}
+  discordSignIn() {}
 
+  @Redirect('http://localhost:3002/users/me')
   @UseGuards(DiscordAuthGuard)
   @Get('discord/callback')
-  async discordSignInCallback(@Req() req) {
-    return 'Success';
-  }
+  async discordSignInCallback() {}
 }
