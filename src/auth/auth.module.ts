@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { SessionSerializer } from './session.serializer';
 import {
   LocalStrategy,
   GithubStrategy,
@@ -18,8 +19,9 @@ import {
         'http://localhost:3002/users/me',
       failureRedirect:
         'http://localhost:3002/auth/signin',
+      session: true,
     }),
-    JwtModule.register({}),
+    // JwtModule.register({}),
     HttpModule,
   ],
   controllers: [AuthController],
@@ -28,7 +30,7 @@ import {
     LocalStrategy,
     GithubStrategy,
     DiscordStrategy,
-    JwtStrategy,
+    SessionSerializer,
   ],
 })
 export class AuthModule {}

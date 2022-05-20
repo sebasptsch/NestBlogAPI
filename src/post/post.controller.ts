@@ -17,7 +17,7 @@ import {
 } from './dto';
 import { PostService } from './post.service';
 import { Request } from 'express';
-import { JwtGuard } from 'src/auth/guard';
+import { SessionGuard } from 'src/auth/guard';
 // import { SessionGuard } from 'src/auth/guard';
 
 @Controller('posts')
@@ -32,7 +32,7 @@ export class PostController {
   }
 
   // create post
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Post()
   createPost(
     @GetUser('id') userId: number,
@@ -69,7 +69,7 @@ export class PostController {
   }
 
   // edit single post
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Patch(':id')
   editPostById(
     @GetUser('id') userId: number,
@@ -84,7 +84,7 @@ export class PostController {
   }
 
   // delete single post
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Delete(':id')
   deletePostById(
     @GetUser('id') userId: number,

@@ -1,5 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
+import * as passport from 'passport';
+import * as csurf from 'csurf';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -12,13 +17,27 @@ async function bootstrap() {
           'https://hoppscotch.io',
         ],
         allowedHeaders:
-          'X-Requested-With,Content-Type,authorization',
+          'X-Requested-With,Content-Type',
         credentials: true,
         methods:
           'GET, POST, OPTIONS, PUT, PATCH, DELETE',
       },
     },
   );
+  const config = app.get(ConfigService);
+  app.use(
+    cookieParser(config.get('COOKIE_SECRET')),
+  );
+  app.use(
+    session({
+      secret: config.get('SESSION_SECRET'),
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  // app.use(csurf());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

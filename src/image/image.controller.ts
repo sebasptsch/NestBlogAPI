@@ -23,7 +23,7 @@ import { GetUser } from 'src/auth/decorator';
 import { createReadStream } from 'fs';
 import { Response } from 'express';
 import { SharpPipe } from './pipes/processImage.pipe';
-import { JwtGuard } from 'src/auth/guard';
+import { SessionGuard } from 'src/auth/guard';
 
 @Controller('images')
 export class ImageController {
@@ -32,7 +32,7 @@ export class ImageController {
     private readonly images: ImageService,
   ) {}
 
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Post()
   @UseInterceptors(
     ImageFileInterceptor({
@@ -87,7 +87,7 @@ export class ImageController {
     file.pipe(res);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Get()
   async getBelongingImages(
     @GetUser('id') userId: number,
@@ -95,7 +95,7 @@ export class ImageController {
     return this.images.getBelongingImages(userId);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(SessionGuard)
   @Delete(':id')
   async deleteImage(
     @Param('id', ParseIntPipe) id: number,

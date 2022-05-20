@@ -29,15 +29,15 @@ export class AuthController {
     @Req()
     request: Request,
   ) {
-    // request.session.destroy(() => {});
+    request.session.destroy(() => {});
   }
 
   // @UseGuards(RecaptchaGuard)
   @Post('register')
   async signup(
     @Body() dto: AuthDto,
-    @Res()
-    response: Response,
+    // @Res()
+    // response: Response,
   ) {
     // console.log('register called');
     return this.authService.signup(dto);
@@ -51,8 +51,11 @@ export class AuthController {
     // response: Response,
   ) {
     // console.log('request received');
-    return this.authService.login(req.user);
+    // res.redirect(
+    //   'http://localhost:3002/users/me',
+    // );
     // return 'test3';
+    return 'Success';
   }
 
   @UseGuards(GithubAuthGuard)
@@ -61,8 +64,14 @@ export class AuthController {
 
   @UseGuards(GithubAuthGuard)
   @Get('github/callback')
-  async githubSignInCallback(@Req() req) {
-    return await this.authService.login(req.user);
+  async githubSignInCallback(
+    @Req() req,
+    // @Res() res,
+  ) {
+    // res.redirect(
+    //   'http://localhost:3002/users/me',
+    // );
+    return 'Success';
   }
 
   @UseGuards(DiscordAuthGuard)
@@ -72,6 +81,6 @@ export class AuthController {
   @UseGuards(DiscordAuthGuard)
   @Get('discord/callback')
   async discordSignInCallback(@Req() req) {
-    return await this.authService.login(req.user);
+    return 'Success';
   }
 }
