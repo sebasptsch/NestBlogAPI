@@ -32,9 +32,7 @@ export class LocalStrategy extends PassportStrategy(
         username,
         password,
       );
-    if (!user) {
-      throw new UnauthorizedException(user);
-    }
+
     return user;
   }
 }
