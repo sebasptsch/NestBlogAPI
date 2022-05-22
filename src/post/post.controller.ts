@@ -18,27 +18,37 @@ import {
 import { PostService } from './post.service';
 import { Request } from 'express';
 import { SessionGuard } from 'src/auth/guard';
-// import { SessionGuard } from 'src/auth/guard';
+import {
+  ApiTags,
+  ApiCookieAuth,
+} from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
+@ApiTags('Posts')
 @Controller('posts')
 export class PostController {
   constructor(private postService: PostService) {}
 
-  // get all posts
-
+  /** Get a list of posts (if you're logged in then you get your own draft posts as well) */
   @Get()
+  @ApiCookieAuth()
   getPosts(@GetUser('id') userId: number) {
     return this.postService.getPosts(userId);
   }
 
+  /** Get a list of posts belonging to the logged in user */
   @UseGuards(SessionGuard)
+  @ApiCookieAuth()
+  @Roles('ADMIN')
   @Get('me')
   getMyPosts(@GetUser('id') userId: number) {
     return this.postService.getMyPosts(userId);
   }
 
-  // create post
+  /** Create a new post */
   @UseGuards(SessionGuard)
+  @ApiCookieAuth()
+  @Roles('ADMIN')
   @Post()
   createPost(
     @GetUser('id') userId: number,
@@ -50,8 +60,7 @@ export class PostController {
     );
   }
 
-  // get single post
-
+  /** Get a post by it's Id */
   @Get(':id')
   getPostById(
     @Param('id', ParseIntPipe) postId: number,
@@ -63,6 +72,7 @@ export class PostController {
     );
   }
 
+  /** Retreive a post by it's Slug */
   @Get('slug/:slug')
   getPostBySlug(
     @Param('slug') postSlug: string,
@@ -74,8 +84,10 @@ export class PostController {
     );
   }
 
-  // edit single post
+  /** Edit a post */
   @UseGuards(SessionGuard)
+  @ApiCookieAuth()
+  @Roles('ADMIN')
   @Patch(':id')
   editPostById(
     @GetUser('id') userId: number,
@@ -89,8 +101,10 @@ export class PostController {
     );
   }
 
-  // delete single post
+  /** Delete a post */
   @UseGuards(SessionGuard)
+  @ApiCookieAuth()
+  @Roles('ADMIN')
   @Delete(':id')
   deletePostById(
     @GetUser('id') userId: number,

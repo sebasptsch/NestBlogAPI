@@ -24,7 +24,19 @@ import { createReadStream } from 'fs';
 import { Response } from 'express';
 import { SharpPipe } from './pipes/processImage.pipe';
 import { SessionGuard } from 'src/auth/guard';
+import { LocalFileDto } from './dto/create.dto';
+import { ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiCookieAuth,
+} from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import {
+  fileTypeFromBuffer,
+  fileTypeFromFile,
+} from 'file-type';
 
+@ApiTags('Images')
 @Controller('images')
 export class ImageController {
   constructor(
@@ -32,8 +44,12 @@ export class ImageController {
     private readonly images: ImageService,
   ) {}
 
+  /** Upload a new image */
+  @ApiCookieAuth()
   @UseGuards(SessionGuard)
+  @ApiConsumes('multipart/form-data')
   @Post()
+  @Roles('ADMIN')
   @UseInterceptors(
     ImageFileInterceptor({
       fieldName: 'file',
@@ -41,8 +57,18 @@ export class ImageController {
       limits: {
         fileSize: Math.pow(1024, 2), // 1MB
       },
-      fileFilter: (request, file, callback) => {
-        if (!file.mimetype.includes('image')) {
+      fileFilter: async (
+        request,
+        file,
+        callback,
+      ) => {
+        const fileType = await fileTypeFromBuffer(
+          file.buffer,
+        );
+        if (
+          !file.mimetype.includes('image') ||
+          !fileType.mime.includes('image')
+        ) {
           return callback(
             new BadRequestException(
               'Please provid a valid image',
@@ -58,16 +84,20 @@ export class ImageController {
     @UploadedFile(SharpPipe)
     image: { filename: string; path: string },
     @GetUser('id') id: number,
+    @Body() body: LocalFileDto,
   ) {
-    //   return this.prisma.image.create(request.user.id, )
-    return this.images.uploadImage({
-      userId: id,
-      path: image.path,
-      filename: image.filename,
-      mimetype: 'image/webp',
-    });
+    return this.images.uploadImage(
+      {
+        userId: id,
+        path: image.path,
+        filename: image.filename,
+        mimetype: 'image/webp',
+      },
+      body.name,
+    );
   }
 
+  /** Get an image by it's id */
   @Get(':id')
   async getImage(
     @Param('id', ParseIntPipe) id: number,
@@ -87,6 +117,9 @@ export class ImageController {
     file.pipe(res);
   }
 
+  /** Get a list of images that you've uploaded */
+  @ApiCookieAuth()
+  @Roles('ADMIN')
   @UseGuards(SessionGuard)
   @Get()
   async getBelongingImages(
@@ -95,6 +128,9 @@ export class ImageController {
     return this.images.getBelongingImages(userId);
   }
 
+  /** Delete an image by it's id */
+  @ApiCookieAuth()
+  @Roles('ADMIN')
   @UseGuards(SessionGuard)
   @Delete(':id')
   async deleteImage(

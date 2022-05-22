@@ -6,6 +6,7 @@ import {
 import { createReadStream } from 'fs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as fs from 'fs';
+import { LocalFileDto } from './dto/create.dto';
 
 @Injectable()
 export class ImageService {
@@ -13,12 +14,12 @@ export class ImageService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async uploadImage(data: LocalFileDto) {
+  async uploadImage(data, name) {
     return this.prisma.image.create({
       data: {
         filename: data.filename,
+        name,
         path: data.path,
-        mimetype: data.mimetype,
         user: {
           connect: {
             id: data.userId,

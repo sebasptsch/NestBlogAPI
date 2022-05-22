@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { userInclude } from 'src/auth/contants';
 import { PrismaService } from '../prisma/prisma.service';
 import { EditUserDto } from './dto';
 
@@ -13,39 +14,14 @@ export class UserService {
     userId: number,
     dto: EditUserDto,
   ) {
-    if (dto.avatarId) {
-      const avatarImage =
-        await this.prisma.image.findFirst({
-          where: {
-            id: dto.avatarId,
-            userId,
-          },
-        });
-      if (!avatarImage)
-        throw new ForbiddenException(
-          'No image found.',
-        );
-      const user = await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          name: dto.name ?? undefined,
-          avatar: {
-            connect: {
-              id: avatarImage.id,
-            },
-          },
-        },
-      });
-      return user;
-    } else {
-      const user = await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          name: dto.name ?? undefined,
-        },
-      });
-      return user;
-    }
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: dto.name ?? undefined,
+        avatarSrc: dto.avatarSrc ?? undefined,
+      },
+    });
+    return user;
   }
 
   async getUser(userId) {
@@ -53,9 +29,31 @@ export class UserService {
       where: {
         id: userId,
       },
+      select: {
+        name: true,
+        id: true,
+        avatarSrc: true,
+      },
+    });
+  }
+
+  async getPrivateUser(userId) {
+    return this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      ...userInclude,
+    });
+  }
+
+  async deleteUser(userId) {
+    return this.prisma.user.delete({
+      where: {
+        id: userId,
+      },
       include: {
-        avatar: true,
-        accounts: true,
+        posts: true,
+        images: true,
       },
     });
   }

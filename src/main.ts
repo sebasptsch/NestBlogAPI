@@ -5,7 +5,13 @@ import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as csurf from 'csurf';
+import Redis from 'ioredis';
+import * as connectRedis from 'connect-redis';
 import { AppModule } from './app.module';
+import {
+  SwaggerModule,
+  DocumentBuilder,
+} from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(
@@ -28,11 +34,21 @@ async function bootstrap() {
   app.use(
     cookieParser(config.get('COOKIE_SECRET')),
   );
+
+  let redisClient = new Redis({
+    host: 'localhost',
+    port: 6380,
+  });
+  const redisStore = connectRedis(session);
+
   app.use(
     session({
       secret: config.get('SESSION_SECRET'),
       resave: false,
       saveUninitialized: false,
+      store: new redisStore({
+        client: redisClient,
+      }),
     }),
   );
   app.use(passport.initialize());
@@ -44,6 +60,24 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle("Seb's Blog API")
+    .setDescription(
+      'The seb blog API description',
+    )
+    .addCookieAuth('connect.sid')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(
+    app,
+    swaggerConfig,
+  );
+  // console.log(document);
+  SwaggerModule.setup('api', app, document, {
+    customSiteTitle: "Seb's Blog API Reference",
+  });
+
   await app.listen(3000);
 }
 bootstrap();

@@ -43,7 +43,6 @@ export class DiscordStrategy extends PassportStrategy(
     const user =
       await this.authService.validateDiscordUser(
         profile,
-        req.user?.id,
       );
     if (!user) {
       throw new UnauthorizedException(user);

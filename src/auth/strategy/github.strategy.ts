@@ -43,7 +43,6 @@ export class GithubStrategy extends PassportStrategy(
     const user =
       await this.authService.validateGithubUser(
         profile,
-        req.user?.id,
       );
     if (!user) {
       throw new UnauthorizedException(user);

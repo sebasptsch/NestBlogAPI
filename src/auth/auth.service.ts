@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -12,6 +13,10 @@ import { ConfigService } from '@nestjs/config';
 import { userInfo } from 'os';
 import { Profile as DiscordProfile } from 'passport-discord';
 import { Profile as GithubProfile } from 'passport-github2';
+import { NotFoundError } from 'rxjs';
+import { Profile } from 'passport';
+import type Prisma from '@prisma/client';
+import { providerInclude } from './contants';
 // import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -21,12 +26,7 @@ export class AuthService {
     private config: ConfigService, // private jwtService: JwtService,
   ) {}
 
-  async signup(
-    dto: AuthDto,
-    existingUser?: {
-      id: number;
-    },
-  ) {
+  async signup(dto: AuthDto) {
     // console.log('hello');
     const existingAccount =
       await this.prisma.provider.findFirst({
@@ -42,59 +42,31 @@ export class AuthService {
     }
 
     const hash = await argon.hash(dto.password);
-    if (existingUser?.id) {
-      const provider =
-        await this.prisma.provider.create({
-          data: {
-            uid: dto.username,
-            provider: 'LOCAL',
-            password: hash,
-            user: {
-              connect: {
-                id: existingUser.id,
-              },
+
+    const provider =
+      await this.prisma.provider.create({
+        data: {
+          uid: dto.username,
+          provider: 'LOCAL',
+          password: hash,
+          user: {
+            create: {
+              name: dto.username,
             },
           },
-          include: {
-            user: {
-              include: {
-                avatar: true,
-              },
-            },
-          },
-        });
-      // return this.signToken(user.id);
-      return provider.user;
-    } else {
-      const provider =
-        await this.prisma.provider.create({
-          data: {
-            uid: dto.username,
-            provider: 'LOCAL',
-            password: hash,
-            user: {
-              create: {
-                name: dto.username,
-              },
-            },
-          },
-          include: {
-            user: {
-              include: {
-                avatar: true,
-              },
-            },
-          },
-        });
-      // return this.signToken(user.id);
-      return provider.user;
-    }
+        },
+        include: {
+          user: true,
+        },
+      });
+    // return this.signToken(user.id);
+    return provider.user;
   }
 
   async validateDiscordUser(
     user: DiscordProfile,
-    existingUserId?: number,
   ) {
+    // console.log(user);
     const existingAccount =
       await this.prisma.provider.findFirst({
         where: {
@@ -102,59 +74,28 @@ export class AuthService {
           provider: 'DISCORD',
         },
         include: {
-          user: {
-            include: {
-              avatar: true,
-            },
-          },
+          user: true,
         },
       });
     if (!existingAccount) {
-      if (existingUserId) {
-        const account =
-          await this.prisma.provider.create({
-            data: {
-              uid: user.id,
-              provider: 'DISCORD',
+      const account =
+        await this.prisma.provider.create({
+          data: {
+            uid: user.id,
+            provider: 'DISCORD',
 
-              user: {
-                connect: {
-                  id: existingUserId,
-                },
+            user: {
+              create: {
+                name: user.username,
+                // avatarSrc: `https://cdn.discordapp.com/${user.avatar}.webp`,
               },
             },
-            include: {
-              user: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          });
-        return account.user;
-      } else {
-        const account =
-          await this.prisma.provider.create({
-            data: {
-              uid: user.id,
-              provider: 'DISCORD',
-
-              user: {
-                create: {
-                  name: user.username,
-                },
-              },
-            },
-            include: {
-              user: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          });
-        return account.user;
-      }
+          },
+          include: {
+            user: true,
+          },
+        });
+      return account.user;
     } else {
       return existingAccount.user;
     }
@@ -162,8 +103,8 @@ export class AuthService {
 
   async validateGithubUser(
     profile: GithubProfile,
-    existingUserId?: number,
   ) {
+    // console.log(profile);
     const existingAccount =
       await this.prisma.provider.findFirst({
         where: {
@@ -171,57 +112,28 @@ export class AuthService {
           provider: 'GITHUB',
         },
         include: {
-          user: {
-            include: {
-              avatar: true,
-            },
-          },
+          user: true,
         },
       });
     if (!existingAccount) {
-      if (existingUserId) {
-        const account =
-          await this.prisma.provider.create({
-            data: {
-              uid: profile.id,
-              provider: 'GITHUB',
-              user: {
-                connect: {
-                  id: existingUserId,
-                },
+      const account =
+        await this.prisma.provider.create({
+          data: {
+            uid: profile.id,
+            provider: 'GITHUB',
+            user: {
+              create: {
+                name: profile.displayName,
+                avatarSrc:
+                  profile.photos[0].value, // TODO: Grabs random photo?
               },
             },
-            include: {
-              user: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          });
-        return account.user;
-      } else {
-        const account =
-          await this.prisma.provider.create({
-            data: {
-              uid: profile.id,
-              provider: 'GITHUB',
-              user: {
-                create: {
-                  name: profile.displayName,
-                },
-              },
-            },
-            include: {
-              user: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          });
-        return account.user;
-      }
+          },
+          include: {
+            user: true,
+          },
+        });
+      return account.user;
     } else {
       return existingAccount.user;
     }
@@ -231,6 +143,14 @@ export class AuthService {
     username: string,
     password: string,
   ) {
+    if (!username)
+      throw new BadRequestException(
+        'No username provided',
+      );
+    if (!password)
+      throw new BadRequestException(
+        'No password provided',
+      );
     const account =
       await this.prisma.provider.findFirst({
         where: {
@@ -238,16 +158,14 @@ export class AuthService {
           provider: 'LOCAL',
         },
         include: {
-          user: {
-            include: {
-              avatar: true,
-            },
-          },
+          user: true,
         },
       });
 
     if (!account) {
-      return null;
+      throw new NotFoundException(
+        "An account with this username doesn't exist.",
+      );
     }
 
     const pwMatches = await argon.verify(
@@ -255,9 +173,33 @@ export class AuthService {
       password,
     );
 
-    if (pwMatches) {
-      return account.user;
+    if (!pwMatches) {
+      throw new BadRequestException(
+        'Invalid password',
+      );
     }
-    return null;
+    return account.user;
+  }
+
+  async isAdmin(userId?: number) {
+    if (!userId) {
+      return { isAdmin: false };
+    }
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          role: true,
+        },
+      });
+    if (!user) {
+      return { isAdmin: false };
+    }
+    if (user.role !== 'ADMIN') {
+      return { isAdmin: false };
+    }
+    return { isAdmin: true };
   }
 }

@@ -3,14 +3,18 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class EditUserDto {
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
   name?: string;
 
-  @IsNumber()
+  @ApiProperty({ required: false })
+  @IsUrl()
   @IsOptional()
-  avatarId?: number;
+  avatarSrc?: string;
 }

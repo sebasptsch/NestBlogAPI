@@ -24,6 +24,14 @@ export class PostService {
       where: {
         userId,
       },
+      include: {
+        user: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
     });
   }
 
@@ -32,6 +40,14 @@ export class PostService {
       return this.prisma.post.findMany({
         where: {
           status: DraftStatus.PUBLISHED,
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
         },
       });
     } else {
@@ -46,6 +62,14 @@ export class PostService {
               status: DraftStatus.PUBLISHED,
             },
           ],
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
         },
       });
     }
@@ -70,6 +94,14 @@ export class PostService {
             .trim(),
           user: {
             connect: { id: userId },
+          },
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              id: true,
+            },
           },
         },
       });
@@ -110,6 +142,14 @@ export class PostService {
               },
             ],
           },
+          include: {
+            user: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
         });
 
       return post;
@@ -119,6 +159,14 @@ export class PostService {
           where: {
             id: postId,
             status: DraftStatus.PUBLISHED,
+          },
+          include: {
+            user: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
           },
         });
 
@@ -145,6 +193,14 @@ export class PostService {
               },
             ],
           },
+          include: {
+            user: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
         });
 
       return post;
@@ -158,6 +214,14 @@ export class PostService {
                 status: DraftStatus.PUBLISHED,
               },
             ],
+          },
+          include: {
+            user: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
           },
         });
 
@@ -189,6 +253,14 @@ export class PostService {
         id: postId,
       },
       data: { ...dto },
+      include: {
+        user: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
     });
   }
 
@@ -213,6 +285,14 @@ export class PostService {
     return this.prisma.post.delete({
       where: {
         id: postId,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
       },
     });
   }
