@@ -9,7 +9,6 @@ import {
   LocalStrategy,
   GithubStrategy,
   DiscordStrategy,
-  JwtStrategy,
 } from './strategy/index.js';
 
 @Module({

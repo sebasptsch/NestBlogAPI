@@ -54,13 +54,14 @@ export class AuthController {
   @ApiBadRequestResponse({
     description: 'Credentials taken',
   })
+  @UseGuards(RecaptchaGuard)
   @Post('register')
   async signup(@Body() dto: AuthDto) {
     return this.authService.signup(dto);
   }
 
   /** Sign in to an existing local account */
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard, RecaptchaGuard)
   @Post('signin')
   async signin(@Body() dto: AuthDto) {}
 
