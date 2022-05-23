@@ -24,9 +24,10 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v3
+        id: docker_build
         with:
           push: true
           tags: ghcr.io/sebasptsch/nestjsblogapi:latest
 
       - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        run: echo ${{ steps.docker_build.outputs.digest }} >> $GITHUB_STEP_SUMMARY
