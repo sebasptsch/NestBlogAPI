@@ -28,11 +28,13 @@ jobs:
         with:
           push: true
           tags: ghcr.io/sebasptsch/nestjsblogapi:latest
-      - name: Dive
+      - name: Install Dive
         run: |
           wget https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.deb
           sudo apt install ./dive_0.9.2_linux_amd64.deb
-          CI=true dive ghcr.io/sebasptsch/nestjsblogapi:latest
+      - name: Run Dive
+        run: |
+          CI=true dive ${{ steps.docker_build.outputs.digest }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }} >> $GITHUB_STEP_SUMMARY
