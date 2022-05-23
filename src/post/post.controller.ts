@@ -10,19 +10,19 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { GetUser } from '../auth/decorator';
+import { GetUser } from '../auth/decorator/index.js';
 import {
   CreatePostDto,
   EditPostDto,
-} from './dto';
-import { PostService } from './post.service';
+} from './dto/index.js';
+import { PostService } from './post.service.js';
 import { Request } from 'express';
-import { SessionGuard } from 'src/auth/guard';
+import { SessionGuard } from '../auth/guard/index.js';
 import {
   ApiTags,
   ApiCookieAuth,
 } from '@nestjs/swagger';
-import { Roles } from 'src/auth/decorator/roles.decorator';
+import { Roles } from '../auth/decorator/roles.decorator.js';
 
 @ApiTags('Posts')
 @Controller('posts')

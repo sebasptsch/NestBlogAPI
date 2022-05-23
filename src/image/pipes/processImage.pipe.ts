@@ -1,9 +1,10 @@
 import {
+  BadRequestException,
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
-import * as path from 'path';
-import * as sharp from 'sharp';
+import path from 'path';
+import sharp from 'sharp';
 
 @Injectable()
 export class SharpPipe
@@ -16,6 +17,17 @@ export class SharpPipe
   async transform(
     image: Express.Multer.File,
   ): Promise<{ filename: string; path: string }> {
+    const { fileTypeFromBuffer } = await import(
+      'file-type'
+    );
+    const fileType = await fileTypeFromBuffer(
+      Buffer.from(image.buffer),
+    );
+    if (!fileType?.mime.includes('image')) {
+      throw new BadRequestException(
+        'Please provid a valid image',
+      );
+    }
     const originalName = path.parse(
       image.originalname,
     ).name;

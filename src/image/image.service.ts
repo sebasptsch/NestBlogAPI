@@ -4,9 +4,9 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { createReadStream } from 'fs';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import * as fs from 'fs';
-import { LocalFileDto } from './dto/create.dto';
+import { LocalFileDto } from './dto/create.dto.js';
 
 @Injectable()
 export class ImageService {

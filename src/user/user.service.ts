@@ -2,9 +2,9 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { userInclude } from 'src/auth/contants';
-import { PrismaService } from '../prisma/prisma.service';
-import { EditUserDto } from './dto';
+import { userInclude } from '../auth/contants.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { EditUserDto } from './dto/index.js';
 
 @Injectable()
 export class UserService {

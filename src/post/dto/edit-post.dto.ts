@@ -10,10 +10,10 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
-import { CreatePostDto } from './create-post.dto';
+import { CreatePostDto } from './create-post.dto.js';
 import { ApiProperty } from '@nestjs/swagger';
 
-enum Status {
+export enum Status {
   DRAFT = 'DRAFT',
   PUBLISHED = 'PUBLISHED',
 }

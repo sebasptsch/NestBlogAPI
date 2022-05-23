@@ -9,13 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { SessionGuard } from 'src/auth/guard';
-import { GetUser } from '../auth/decorator';
-import { EditUserDto } from './dto';
-import { UserService } from './user.service';
+import { SessionGuard } from '../auth/guard/index.js';
+import { GetUser } from '../auth/decorator/index.js';
+import { EditUserDto } from './dto/index.js';
+import { UserService } from './user.service.js';
 import {
-  ApiTags,
   ApiCookieAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 
 @ApiTags('Users')
@@ -23,7 +23,6 @@ import {
 export class UserController {
   constructor(private userService: UserService) {}
 
-  /** Get my user info */
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @Get('me')
@@ -31,7 +30,6 @@ export class UserController {
     return this.userService.getPrivateUser(id);
   }
 
-  /** Get a user by their Id */
   @Get(':id')
   getUser(
     @Param('id', ParseIntPipe) userId: number,
@@ -39,7 +37,6 @@ export class UserController {
     return this.userService.getUser(userId);
   }
 
-  /** Edit a user by their Id */
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @Patch()
@@ -50,7 +47,6 @@ export class UserController {
     return this.userService.editUser(userId, dto);
   }
 
-  /** Delete a user by their Id */
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @Delete('me')

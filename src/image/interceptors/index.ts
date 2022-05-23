@@ -1,1 +1,1 @@
-export * from './image.interceptor';
+export * from './image.interceptor.js';

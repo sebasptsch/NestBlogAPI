@@ -18,21 +18,21 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 import passport from 'passport';
-import { AuthService } from './auth.service';
-import { AuthDto } from './dto';
+import { AuthService } from './auth.service.js';
+import { AuthDto } from './dto/index.js';
 import {
   DiscordAuthGuard,
   GithubAuthGuard,
   LocalAuthGuard,
   SessionGuard,
-} from './guard';
-import { RecaptchaGuard } from './guard/recaptcha.guard';
+} from './guard/index.js';
+import { RecaptchaGuard } from './guard/recaptcha.guard.js';
 import { Image } from '@prisma/client';
 import {
   ApiTags,
   ApiCookieAuth,
 } from '@nestjs/swagger';
-import { GetUser } from './decorator';
+import { GetUser } from './decorator/index.js';
 
 @ApiTags('Authentication')
 @Controller('auth')

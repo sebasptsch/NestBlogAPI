@@ -6,8 +6,11 @@ import {
   Type,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
-import { diskStorage } from 'multer';
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface.js';
+import {
+  diskStorage,
+  memoryStorage,
+} from 'multer';
 
 interface LocalFilesInterceptorOptions {
   fieldName: string;
@@ -26,6 +29,7 @@ function ImageFileInterceptor(
       const multerOptions: MulterOptions = {
         fileFilter: options.fileFilter,
         limits: options.limits,
+        storage: memoryStorage(),
       };
 
       this.fileInterceptor = new (FileInterceptor(

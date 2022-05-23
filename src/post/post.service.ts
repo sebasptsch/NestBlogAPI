@@ -7,12 +7,12 @@ import {
   DraftStatus,
   Prisma,
 } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/index.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 import {
   CreatePostDto,
   EditPostDto,
-} from './dto';
+} from './dto/index.js';
 
 @Injectable()
 export class PostService {

@@ -2,23 +2,19 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { SessionSerializer } from './session.serializer';
+import { AuthController } from './auth.controller.js';
+import { AuthService } from './auth.service.js';
+import { SessionSerializer } from './session.serializer.js';
 import {
   LocalStrategy,
   GithubStrategy,
   DiscordStrategy,
   JwtStrategy,
-} from './strategy';
+} from './strategy/index.js';
 
 @Module({
   imports: [
     PassportModule.register({
-      successRedirect:
-        'http://localhost:3002/users/me',
-      failureRedirect:
-        'http://localhost:3002/auth/signin',
       session: true,
     }),
     // JwtModule.register({}),

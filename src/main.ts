@@ -1,12 +1,12 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
-import * as passport from 'passport';
-import * as csurf from 'csurf';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import passport from 'passport';
+import csurf from 'csurf';
 import Redis from 'ioredis';
-import * as connectRedis from 'connect-redis';
+import connectRedis from 'connect-redis';
 import { AppModule } from './app.module';
 import {
   SwaggerModule,
@@ -19,7 +19,7 @@ async function bootstrap() {
     {
       cors: {
         origin: [
-          'http://localhost:3002',
+          'https://blog-frontend-virid.vercel.app',
           'https://hoppscotch.io',
         ],
         allowedHeaders:
@@ -36,8 +36,8 @@ async function bootstrap() {
   );
 
   let redisClient = new Redis({
-    host: 'localhost',
-    port: 6380,
+    host: config.get('REDIS_HOST'),
+    port: parseInt(config.get('REDIS_PORT')),
   });
   const redisStore = connectRedis(session);
 

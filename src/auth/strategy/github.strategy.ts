@@ -10,7 +10,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../auth.service.js';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 

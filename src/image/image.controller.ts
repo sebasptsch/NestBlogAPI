@@ -13,28 +13,27 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import ImageFileInterceptor from './interceptors/image.interceptor';
-// import { SessionGuard } from 'src/auth/guard';
-import { ImageService } from './image.service';
-import { GetUser } from 'src/auth/decorator';
+import {
+  diskStorage,
+  memoryStorage,
+} from 'multer';
+import ImageFileInterceptor from './interceptors/image.interceptor.js';
+// import { SessionGuard } from '../auth/guard';
+import { ImageService } from './image.service.js';
+import { GetUser } from '../auth/decorator/index.js';
 import { createReadStream } from 'fs';
 import { Response } from 'express';
-import { SharpPipe } from './pipes/processImage.pipe';
-import { SessionGuard } from 'src/auth/guard';
-import { LocalFileDto } from './dto/create.dto';
+import { SharpPipe } from './pipes/processImage.pipe.js';
+import { SessionGuard } from '../auth/guard/index.js';
+import { LocalFileDto } from './dto/create.dto.js';
 import { ApiConsumes } from '@nestjs/swagger';
 import {
   ApiTags,
   ApiCookieAuth,
 } from '@nestjs/swagger';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import {
-  fileTypeFromBuffer,
-  fileTypeFromFile,
-} from 'file-type';
+import { Roles } from '../auth/decorator/roles.decorator.js';
 
 @ApiTags('Images')
 @Controller('images')
@@ -51,32 +50,10 @@ export class ImageController {
   @Post()
   @Roles('ADMIN')
   @UseInterceptors(
-    ImageFileInterceptor({
-      fieldName: 'file',
-      path: '/images',
+    FileInterceptor('file', {
+      storage: memoryStorage(),
       limits: {
         fileSize: Math.pow(1024, 2), // 1MB
-      },
-      fileFilter: async (
-        request,
-        file,
-        callback,
-      ) => {
-        const fileType = await fileTypeFromBuffer(
-          file.buffer,
-        );
-        if (
-          !file.mimetype.includes('image') ||
-          !fileType.mime.includes('image')
-        ) {
-          return callback(
-            new BadRequestException(
-              'Please provid a valid image',
-            ),
-            false,
-          );
-        }
-        callback(null, true);
       },
     }),
   )
@@ -91,7 +68,6 @@ export class ImageController {
         userId: id,
         path: image.path,
         filename: image.filename,
-        mimetype: 'image/webp',
       },
       body.name,
     );

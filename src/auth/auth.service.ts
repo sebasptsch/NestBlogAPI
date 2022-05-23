@@ -5,8 +5,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto } from './dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { AuthDto } from './dto/index.js';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { ConfigService } from '@nestjs/config';
@@ -16,7 +16,7 @@ import { Profile as GithubProfile } from 'passport-github2';
 import { NotFoundError } from 'rxjs';
 import { Profile } from 'passport';
 import type Prisma from '@prisma/client';
-import { providerInclude } from './contants';
+import { providerInclude } from './contants.js';
 // import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
