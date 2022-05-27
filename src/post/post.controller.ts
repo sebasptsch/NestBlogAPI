@@ -76,8 +76,8 @@ export class PostController {
   @Get('me')
   getMyPosts(
     @GetUser('id') userId: number,
-    @Param('cursor') cursorParam?: string,
-    @Param('take') takeParam?: string,
+    @Query('cursor') cursorParam?: string,
+    @Query('take') takeParam?: string,
   ) {
     const cursor = cursorParam
       ? {

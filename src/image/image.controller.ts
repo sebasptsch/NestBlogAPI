@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -100,8 +101,8 @@ export class ImageController {
   @Get()
   async getImages(
     @GetUser('id') userId: number,
-    @Param('cursor') cursorParam?: string,
-    @Param('take') takeParam?: string,
+    @Query('cursor') cursorParam?: string,
+    @Query('take') takeParam?: string,
   ) {
     const cursor = cursorParam
       ? {
