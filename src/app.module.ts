@@ -15,6 +15,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { RoleGuard } from './auth/guard/role.guard';
 // import { PopulateUserMiddleware } from './auth/middleware';
 // import { JwtModule } from '@nestjs/jwt';
+import { SitemapService } from './sitemap/sitemap.service';
+import { SitemapController } from './sitemap/sitemap.controller';
+import { SitemapModule } from './sitemap/sitemap.module';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { RoleGuard } from './auth/guard/role.guard';
     HttpModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ImageModule,
+    SitemapModule,
     // JwtModule.register({}),
   ],
   controllers: [],

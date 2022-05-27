@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -31,9 +32,40 @@ export class PostController {
 
   /** Get a list of posts (if you're logged in then you get your own draft posts as well) */
   @Get()
-  @ApiCookieAuth()
-  getPosts(@GetUser('id') userId: number) {
-    return this.postService.getPosts(userId);
+  getPosts(
+    @Query('cursor')
+    cursorParam: string,
+    @Query('take') takeParam: string,
+  ) {
+    const cursor = cursorParam
+      ? {
+          id: parseInt(cursorParam),
+        }
+      : undefined;
+    const take = takeParam
+      ? parseInt(takeParam)
+      : undefined;
+    return this.postService.posts({
+      where: {
+        status: 'PUBLISHED',
+      },
+      cursor,
+      take,
+      select: {
+        id: true,
+        status: true,
+        slug: true,
+        title: true,
+        summary: true,
+        content: false,
+        user: false,
+        userId: true,
+        createdAt: false,
+        publishedAt: true,
+        updatedAt: false,
+        bannerSrc: true,
+      },
+    });
   }
 
   /** Get a list of posts belonging to the logged in user */
@@ -41,8 +73,41 @@ export class PostController {
   @ApiCookieAuth()
   @Roles('ADMIN')
   @Get('me')
-  getMyPosts(@GetUser('id') userId: number) {
-    return this.postService.getMyPosts(userId);
+  getMyPosts(
+    @GetUser('id') userId: number,
+    @Param('cursor') cursorParam?: string,
+    @Param('take') takeParam?: string,
+  ) {
+    const cursor = cursorParam
+      ? {
+          id: parseInt(cursorParam),
+        }
+      : undefined;
+    const take = takeParam
+      ? parseInt(takeParam)
+      : undefined;
+    console.log(take);
+    return this.postService.posts({
+      where: {
+        userId,
+      },
+      cursor,
+      take,
+      select: {
+        id: true,
+        status: true,
+        slug: true,
+        title: true,
+        summary: true,
+        content: false,
+        user: false,
+        userId: true,
+        createdAt: false,
+        publishedAt: true,
+        updatedAt: false,
+        bannerSrc: true,
+      },
+    });
   }
 
   /** Create a new post */

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import {
   DraftStatus,
+  Post,
   Prisma,
 } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/index.js';
@@ -19,60 +20,30 @@ export class PostService {
   constructor(private prisma: PrismaService) {}
   // get all posts
 
-  async getMyPosts(userId: number) {
+  async posts(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.PostWhereUniqueInput;
+    where?: Prisma.PostWhereInput;
+    orderBy?: Prisma.PostOrderByWithRelationInput;
+    select?: Prisma.PostSelect;
+  }) {
+    const {
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      select,
+    } = params;
     return this.prisma.post.findMany({
-      where: {
-        userId,
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            id: true,
-          },
-        },
-      },
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      select,
     });
-  }
-
-  async getPosts(userId?: number | undefined) {
-    if (!userId) {
-      return this.prisma.post.findMany({
-        where: {
-          status: DraftStatus.PUBLISHED,
-        },
-        include: {
-          user: {
-            select: {
-              name: true,
-              id: true,
-            },
-          },
-        },
-      });
-    } else {
-      return this.prisma.post.findMany({
-        where: {
-          OR: [
-            {
-              status: DraftStatus.DRAFT,
-              userId,
-            },
-            {
-              status: DraftStatus.PUBLISHED,
-            },
-          ],
-        },
-        include: {
-          user: {
-            select: {
-              name: true,
-              id: true,
-            },
-          },
-        },
-      });
-    }
   }
 
   // create post

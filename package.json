@@ -68,7 +68,9 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sharp": "^0.30.4",
-    "validator": "^13.7.0"
+    "sitemap": "^7.1.1",
+    "validator": "^13.7.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

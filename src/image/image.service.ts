@@ -7,6 +7,7 @@ import { createReadStream } from 'fs';
 import { PrismaService } from '../prisma/prisma.service.js';
 import * as fs from 'fs';
 import { LocalFileDto } from './dto/create.dto.js';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ImageService {
@@ -59,11 +60,29 @@ export class ImageService {
     }
   }
 
-  getBelongingImages(userId: number) {
-    return this.prisma.image.findMany({
-      where: {
-        userId,
-      },
+  async images(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ImageWhereUniqueInput;
+    where?: Prisma.ImageWhereInput;
+    orderBy?: Prisma.ImageOrderByWithRelationInput;
+    select?: Prisma.ImageSelect;
+  }) {
+    const {
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      select,
+    } = params;
+    return this.prisma.post.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      select,
     });
   }
 }

@@ -40,7 +40,7 @@ import { Roles } from '../auth/decorator/roles.decorator.js';
 export class ImageController {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly images: ImageService,
+    private readonly imageService: ImageService,
   ) {}
 
   /** Upload a new image */
@@ -63,7 +63,7 @@ export class ImageController {
     @GetUser('id') id: number,
     @Body() body: LocalFileDto,
   ) {
-    return this.images.uploadImage(
+    return this.imageService.uploadImage(
       {
         userId: id,
         path: image.path,
@@ -82,7 +82,7 @@ export class ImageController {
     const fileData =
       await this.prisma.image.findUnique({
         where: {
-          id: id,
+          id,
         },
       });
     if (!fileData)
@@ -98,10 +98,26 @@ export class ImageController {
   @Roles('ADMIN')
   @UseGuards(SessionGuard)
   @Get()
-  async getBelongingImages(
+  async getImages(
     @GetUser('id') userId: number,
+    @Param('cursor') cursorParam?: string,
+    @Param('take') takeParam?: string,
   ) {
-    return this.images.getBelongingImages(userId);
+    const cursor = cursorParam
+      ? {
+          id: parseInt(cursorParam),
+        }
+      : undefined;
+    const take = takeParam
+      ? parseInt(takeParam)
+      : undefined;
+    return this.imageService.images({
+      where: {
+        userId,
+      },
+      cursor,
+      take,
+    });
   }
 
   /** Delete an image by it's id */
@@ -113,6 +129,9 @@ export class ImageController {
     @Param('id', ParseIntPipe) id: number,
     @GetUser('id') userId: number,
   ) {
-    return this.images.deleteImage(id, userId);
+    return this.imageService.deleteImage(
+      id,
+      userId,
+    );
   }
 }
