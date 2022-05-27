@@ -115,6 +115,7 @@ export class ImageController {
       where: {
         userId,
       },
+      skip: cursor ? 1 : undefined,
       cursor,
       take,
     });

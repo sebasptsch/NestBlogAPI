@@ -49,6 +49,7 @@ export class PostController {
       where: {
         status: 'PUBLISHED',
       },
+      skip: cursor ? 1 : undefined,
       cursor,
       take,
       select: {
@@ -92,6 +93,7 @@ export class PostController {
         userId,
       },
       cursor,
+      skip: cursor ? 1 : undefined,
       take,
       select: {
         id: true,
