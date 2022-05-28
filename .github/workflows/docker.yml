@@ -2,6 +2,12 @@ name: ci
 
 on:
   workflow_dispatch:
+    inputs:
+      pushtoregistry:
+        description: 'Push the image on this run.'
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   docker:
@@ -24,5 +30,5 @@ jobs:
         uses: docker/build-push-action@v3
         id: docker_build
         with:
-          push: true
+          push: ${{ github.event.inputs.pushtoregistry }}
           tags: ghcr.io/sebasptsch/nestjsblogapi:latest
