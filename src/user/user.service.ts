@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { Prisma, User } from '@prisma/client';
 import { userInclude } from '../auth/contants.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { EditUserDto } from './dto/index.js';
@@ -9,6 +10,14 @@ import { EditUserDto } from './dto/index.js';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
+
+  async user(
+    userWhereUniqueInput: Prisma.PostWhereUniqueInput,
+  ): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+    });
+  }
 
   async editUser(
     userId: number,

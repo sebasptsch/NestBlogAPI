@@ -1,9 +1,16 @@
-import { Module } from '@nestjs/common';
-import { UserController } from './user.controller.js';
-import { UserService } from './user.service.js';
+import {
+  forwardRef,
+  Module,
+} from '@nestjs/common';
+import { PostModule } from 'src/post/post.module';
+import { UserController } from './user.controller';
+import { UserResolver } from './user.resolver';
+import { UserService } from './user.service';
 
 @Module({
+  imports: [forwardRef(() => PostModule)],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, UserResolver],
+  exports: [UserService],
 })
 export class UserModule {}

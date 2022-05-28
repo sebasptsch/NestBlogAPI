@@ -19,6 +19,13 @@ import {
 export class PostService {
   constructor(private prisma: PrismaService) {}
   // get all posts
+  async post(
+    postWhereUniqueInput: Prisma.PostWhereUniqueInput,
+  ): Promise<Post | null> {
+    return this.prisma.post.findUnique({
+      where: postWhereUniqueInput,
+    });
+  }
 
   async posts(params: {
     skip?: number;
