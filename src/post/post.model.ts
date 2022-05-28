@@ -2,10 +2,22 @@ import {
   Field,
   Int,
   ObjectType,
+  registerEnumType,
 } from '@nestjs/graphql';
 import { User } from 'src/user/user.model';
 import GraphQLJSON from 'graphql-type-json';
 // import { Post } from './post';
+
+import Prisma from '@prisma/client';
+
+enum Status {
+  'DRAFT' = 'DRAFT',
+  'PUBLISHED' = 'PUBLISHED',
+}
+
+registerEnumType(Status, {
+  name: 'Status',
+});
 
 @ObjectType()
 export class Post {
@@ -14,6 +26,9 @@ export class Post {
 
   @Field((type) => String)
   title: string;
+
+  @Field((type) => Status)
+  status: Status;
 
   @Field((type) => GraphQLJSON)
   content: object;
