@@ -11,11 +11,12 @@ import { EditUserDto } from './dto/index.js';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async user(
-    userWhereUniqueInput: Prisma.PostWhereUniqueInput,
-  ): Promise<User | null> {
+  async user(params: {
+    where: Prisma.UserWhereUniqueInput;
+  }): Promise<User | null> {
+    const { where } = params;
     return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
+      where,
     });
   }
 

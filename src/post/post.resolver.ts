@@ -37,12 +37,28 @@ export class PostResolver {
     // })
     // slug?: string,
   ) {
-    return this.postsService.post({ id });
+    return this.postsService.post({
+      where: {
+        id,
+        status: 'PUBLISHED',
+      },
+    });
   }
 
   @ResolveField()
   async user(@Parent() post: Post) {
     const { userId } = post;
-    return this.userService.user({ id: userId });
+    return this.userService.user({
+      where: { id: userId },
+    });
+  }
+
+  @Query((returns) => [Post])
+  async posts() {
+    return this.postsService.posts({
+      where: {
+        status: 'PUBLISHED',
+      },
+    });
   }
 }

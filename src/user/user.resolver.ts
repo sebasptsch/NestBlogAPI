@@ -33,20 +33,24 @@ export class UserResolver {
     })
     id: number,
   ) {
-    return this.userService.user({ id });
+    return this.userService.user({
+      where: {
+        id,
+      },
+    });
   }
 
+  // TODO: Decorator for returning the draft posts of a logged in user
   @Query((returns) => User)
   @UseGuards(GQLSessionGuard)
   whoAmI(@GQLCurrentUser() user: User) {
-    return this.userService.user({ id: user.id });
+    return this.userService.user({
+      where: {
+        id: user.id,
+      },
+    });
   }
 
-  //   @ResolveField()
-  //   async posts(@Parent() author: Author) {
-  //     const { id } = author;
-  //     return this.postsService.findAll({ authorId: id });
-  //   }
   @ResolveField()
   async posts(@Parent() user: User) {
     const { id } = user;
