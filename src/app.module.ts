@@ -41,6 +41,7 @@ import { join } from 'path';
         process.cwd(),
         'src/schema.graphql',
       ),
+      introspection: true,
       driver: ApolloDriver,
       sortSchema: true,
       resolvers: {
