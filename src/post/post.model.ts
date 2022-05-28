@@ -8,15 +8,12 @@ import { User } from 'src/user/user.model';
 import GraphQLJSON from 'graphql-type-json';
 // import { Post } from './post';
 
-import Prisma from '@prisma/client';
+import Prisma, {
+  DraftStatus,
+} from '@prisma/client';
 
-enum Status {
-  'DRAFT' = 'DRAFT',
-  'PUBLISHED' = 'PUBLISHED',
-}
-
-registerEnumType(Status, {
-  name: 'Status',
+registerEnumType(DraftStatus, {
+  name: 'DraftStatus',
 });
 
 @ObjectType()
@@ -27,8 +24,8 @@ export class Post {
   @Field((type) => String)
   title: string;
 
-  @Field((type) => Status)
-  status: Status;
+  @Field((type) => DraftStatus)
+  status: DraftStatus;
 
   @Field((type) => GraphQLJSON)
   content: object;

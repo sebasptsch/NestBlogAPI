@@ -52,12 +52,25 @@ export class UserResolver {
   }
 
   @ResolveField()
-  async posts(@Parent() user: User) {
+  async posts(
+    @Parent() user: User,
+    @GQLCurrentUser() currentUser: User,
+  ) {
     const { id } = user;
     return this.postsService.posts({
       where: {
-        userId: id,
-        status: 'PUBLISHED',
+        OR: [
+          {
+            status: 'PUBLISHED',
+            userId: id,
+          },
+          {
+            userId:
+              currentUser.id === id
+                ? id
+                : undefined,
+          },
+        ],
       },
     });
   }

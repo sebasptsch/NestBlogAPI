@@ -10,16 +10,20 @@ import {
   Parent,
   Query,
 } from '@nestjs/graphql';
-import { User } from 'src/user/user.model';
+import {
+  DraftStatus,
+  User,
+} from '@prisma/client';
+import { GQLCurrentUser } from 'src/auth/decorator/current-gql-user.decorator';
+import { User as GQLUser } from 'src/user/user.model';
 import { UserService } from 'src/user/user.service';
 import { Post } from './post.model';
 import { PostService } from './post.service';
-
+import { Express } from 'express';
 @Resolver((of) => Post)
 export class PostResolver {
   constructor(
     private postsService: PostService,
-    // private userService: UserService,
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
   ) {}
@@ -28,19 +32,21 @@ export class PostResolver {
   async post(
     @Args('id', {
       type: () => Int,
-      //   nullable: true,
     })
     id: number,
-    // @Args('slug', {
-    //   type: () => String,
-    //   nullable: true,
-    // })
-    // slug?: string,
+    @GQLCurrentUser() user?: User,
   ) {
     return this.postsService.post({
       where: {
         id,
-        status: 'PUBLISHED',
+        OR: [
+          {
+            status: 'PUBLISHED',
+          },
+          {
+            userId: user?.id,
+          },
+        ],
       },
     });
   }
@@ -54,10 +60,17 @@ export class PostResolver {
   }
 
   @Query((returns) => [Post])
-  async posts() {
+  async posts(@GQLCurrentUser() user?: User) {
     return this.postsService.posts({
       where: {
-        status: 'PUBLISHED',
+        OR: [
+          {
+            status: 'PUBLISHED',
+          },
+          {
+            userId: user?.id,
+          },
+        ],
       },
     });
   }
