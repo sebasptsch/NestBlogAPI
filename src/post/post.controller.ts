@@ -24,7 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator.js';
 import { GetPostsDto } from './dto/getPostsInput.dto.js';
-import { GetPostWithUserDto } from './dto/getPost.dto.js';
+import { GetPostWithUserDto } from './dto/GetPostWithUser.dto.js';
 import { MinimalPostDto } from './dto/MinimalPost.dto.js';
 import { CreatePostDto } from './dto/CreatePost.dto.js';
 import { EditPostDto } from './dto/EditPost.dto.js';

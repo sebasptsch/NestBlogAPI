@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Role, User } from '@prisma/client';
 
-export class UserDto implements User {
+export class UserDto {
   id: number;
-  name: string | null;
+  name?: string;
   createdAt: Date;
-  avatarSrc: string | null;
+  avatarSrc?: string;
   updatedAt: Date;
   @ApiProperty({ enum: Role })
   role: Role;

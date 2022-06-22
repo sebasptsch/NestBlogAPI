@@ -9,7 +9,7 @@ import {
   Matches,
 } from 'class-validator';
 
-export class PostDto implements Post {
+export class PostDto {
   id: number;
   @ApiProperty({ enum: DraftStatus })
   status: DraftStatus;
@@ -17,7 +17,7 @@ export class PostDto implements Post {
   slug: string;
   title: string;
   summary: string;
-  content: Prisma.JsonValue;
+  content: object;
   userId: number;
   @IsDateString()
   createdAt: Date;
@@ -25,5 +25,5 @@ export class PostDto implements Post {
   publishedAt: Date;
   @IsDateString()
   updatedAt: Date;
-  bannerSrc: string | null;
+  bannerSrc?: string;
 }
