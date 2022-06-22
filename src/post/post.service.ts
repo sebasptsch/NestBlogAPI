@@ -10,10 +10,8 @@ import {
 } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/index.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import {
-  CreatePostDto,
-  EditPostDto,
-} from './dto/index.js';
+import { CreatePostDto } from './dto/CreatePost.dto.js';
+import { EditPostDto } from './dto/EditPost.dto.js';
 
 @Injectable()
 export class PostService {
@@ -64,13 +62,7 @@ export class PostService {
       const post = await this.prisma.post.create({
         data: {
           ...dto,
-          slug: dto.title
-            .toLowerCase()
-            .replace(
-              /[^a-zA-Z0-9]+(.)/g,
-              (m, chr) => '-' + chr,
-            )
-            .trim(),
+
           user: {
             connect: { id: userId },
           },

@@ -8,15 +8,17 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { SessionGuard } from '../auth/guard/index.js';
 import { GetUser } from '../auth/decorator/index.js';
 import { EditUserDto } from './dto/index.js';
 import { UserService } from './user.service.js';
 import {
   ApiCookieAuth,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserDto } from './dto/User.dto.js';
+import { MinimalUserDto } from './dto/MinimalUser.dto.js';
 
 @ApiTags('Users')
 @Controller('users')
@@ -26,11 +28,13 @@ export class UserController {
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @Get('me')
+  @ApiOkResponse({ type: UserDto })
   getMe(@GetUser('id') id: number) {
     return this.userService.getPrivateUser(id);
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: MinimalUserDto })
   getUser(
     @Param('id', ParseIntPipe) userId: number,
   ) {
@@ -39,6 +43,7 @@ export class UserController {
 
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
+  @ApiOkResponse({ type: UserDto })
   @Patch()
   editUser(
     @GetUser('id') userId: number,
@@ -49,6 +54,7 @@ export class UserController {
 
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
+  @ApiOkResponse({ type: UserDto })
   @Delete('me')
   deleteUser(@GetUser('id') userId: number) {
     return this.userService.deleteUser(userId);

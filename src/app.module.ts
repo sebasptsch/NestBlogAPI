@@ -18,12 +18,6 @@ import { RoleGuard } from './auth/guard/role.guard';
 import { SitemapService } from './sitemap/sitemap.service';
 import { SitemapController } from './sitemap/sitemap.controller';
 import { SitemapModule } from './sitemap/sitemap.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import GraphQLJSON from 'graphql-type-json';
-import {
-  ApolloDriver,
-  ApolloDriverConfig,
-} from '@nestjs/apollo';
 import { join } from 'path';
 
 @Module({
@@ -36,19 +30,6 @@ import { join } from 'path';
     ConfigModule.forRoot({ isGlobal: true }),
     ImageModule,
     SitemapModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      autoSchemaFile: join(
-        process.cwd(),
-        'src/schema.graphql',
-      ),
-      introspection: true,
-      driver: ApolloDriver,
-      sortSchema: true,
-      resolvers: {
-        JSON: GraphQLJSON,
-      },
-    }),
-    // JwtModule.register({}),
   ],
   controllers: [],
   providers: [

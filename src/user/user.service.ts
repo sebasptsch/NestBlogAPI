@@ -52,7 +52,6 @@ export class UserService {
       where: {
         id: userId,
       },
-      ...userInclude,
     });
   }
 
@@ -60,10 +59,6 @@ export class UserService {
     return this.prisma.user.delete({
       where: {
         id: userId,
-      },
-      include: {
-        posts: true,
-        images: true,
       },
     });
   }

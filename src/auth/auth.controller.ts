@@ -42,6 +42,7 @@ export class AuthController {
   /** Log out of the logged in account */
   @UseGuards(SessionGuard)
   @ApiResponse({ status: 201 })
+  @ApiCookieAuth()
   @Post('logout')
   async logout(@Req() request: Request) {
     request.session.destroy(() => {});
@@ -66,12 +67,14 @@ export class AuthController {
   async signin(@Body() dto: AuthDto) {}
 
   // @UseGuards(SessionGuard)
+  @ApiCookieAuth()
   @Get('loggedIn')
   async loggedIn(@Req() req) {
     return { loggedIn: !!req.user };
   }
 
   @Get('isAdmin')
+  @ApiCookieAuth()
   async isAdmin(
     @Req() req,
     @GetUser('id') userId?: number,

@@ -6,7 +6,7 @@ import {
 import { createReadStream } from 'fs';
 import { PrismaService } from '../prisma/prisma.service.js';
 import * as fs from 'fs';
-import { LocalFileDto } from './dto/create.dto.js';
+import { LocalFileDto } from './dto/createImageInput.dto.js';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -53,6 +53,7 @@ export class ImageService {
           return deletedImage;
         }
       });
+      return deletedImage;
     } else {
       throw new ForbiddenException(
         'This is not your image to delete.',

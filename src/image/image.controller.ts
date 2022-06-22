@@ -28,13 +28,21 @@ import { createReadStream } from 'fs';
 import { Response } from 'express';
 import { SharpPipe } from './pipes/processImage.pipe.js';
 import { SessionGuard } from '../auth/guard/index.js';
-import { LocalFileDto } from './dto/create.dto.js';
-import { ApiConsumes } from '@nestjs/swagger';
+import { LocalFileDto } from './dto/createImageInput.dto.js';
+import {
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import {
   ApiTags,
   ApiCookieAuth,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator.js';
+import { GetImagesDto } from './dto/getImagesInput.dto.js';
+import { GetImageDto } from './dto/getImageInput.dto.js';
+import { DeleteImageDto } from './dto/deleteImageInput.dto.js';
+import { ImageDto } from 'src/image/dto/Image.dto';
 
 @ApiTags('Images')
 @Controller('images')
@@ -48,6 +56,9 @@ export class ImageController {
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @ApiConsumes('multipart/form-data')
+  @ApiCreatedResponse({
+    type: ImageDto,
+  })
   @Post()
   @Roles('ADMIN')
   @UseInterceptors(
@@ -76,8 +87,11 @@ export class ImageController {
 
   /** Get an image by it's id */
   @Get(':id')
+  @ApiOkResponse({
+    description: 'Returns the image file itself',
+  })
   async getImage(
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: GetImageDto,
     @Res() res: Response,
   ) {
     const fileData =
@@ -98,26 +112,20 @@ export class ImageController {
   @ApiCookieAuth()
   @Roles('ADMIN')
   @UseGuards(SessionGuard)
+  @ApiOkResponse({ type: [ImageDto] })
   @Get()
   async getImages(
     @GetUser('id') userId: number,
-    @Query('cursor') cursorParam?: string,
-    @Query('take') takeParam?: string,
+    @Query() queryParams: GetImagesDto,
   ) {
-    const cursor = cursorParam
-      ? {
-          id: parseInt(cursorParam),
-        }
-      : undefined;
-    const take = takeParam
-      ? parseInt(takeParam)
-      : undefined;
+    const { cursor, take } = queryParams;
+
     return this.imageService.images({
       where: {
         userId,
       },
       skip: cursor ? 1 : undefined,
-      cursor,
+      cursor: cursor ? { id: cursor } : undefined,
       take,
     });
   }
@@ -126,9 +134,10 @@ export class ImageController {
   @ApiCookieAuth()
   @Roles('ADMIN')
   @UseGuards(SessionGuard)
+  @ApiOkResponse({ type: ImageDto })
   @Delete(':id')
   async deleteImage(
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: DeleteImageDto,
     @GetUser('id') userId: number,
   ) {
     return this.imageService.deleteImage(

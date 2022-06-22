@@ -4,6 +4,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import {
   SitemapStream,
@@ -15,7 +16,8 @@ import { SitemapService } from './sitemap.service';
 
 let sitemap;
 
-@Controller('sitemap')
+@ApiTags('Root')
+@Controller()
 export class SitemapController {
   constructor(
     private readonly sitemapService: SitemapService,

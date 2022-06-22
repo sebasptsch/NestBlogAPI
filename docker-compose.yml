@@ -21,10 +21,10 @@ services:
     ports:
       - '6380:6379'
     restart: unless-stopped
-  dev-app:
-    image: backendapi:latest
-    env_file: .env.docker
-    volumes:
-      - ./images:/home/node/images
-    ports:
-      - '3000:3000'
+  # dev-app:
+  #   image: backendapi:latest
+  #   env_file: .env
+  #   volumes:
+  #     - ./images:/home/node/images
+  #   ports:
+  #     - '3000:3000'

@@ -4,13 +4,12 @@ import {
 } from '@nestjs/common';
 import { PostModule } from 'src/post/post.module';
 import { UserController } from './user.controller';
-import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 
 @Module({
   imports: [forwardRef(() => PostModule)],
   controllers: [UserController],
-  providers: [UserService, UserResolver],
+  providers: [UserService],
   exports: [UserService],
 })
 export class UserModule {}

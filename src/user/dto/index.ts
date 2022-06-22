@@ -1,1 +1,1 @@
-export * from './edit-user.dto.js';
+export * from './editUserInput.dto.js';
