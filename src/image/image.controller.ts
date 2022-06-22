@@ -91,7 +91,8 @@ export class ImageController {
     description: 'Returns the image file itself',
   })
   async getImage(
-    @Param() { id }: GetImageDto,
+    @Param('id', ParseIntPipe)
+    id: number,
     @Res() res: Response,
   ) {
     const fileData =

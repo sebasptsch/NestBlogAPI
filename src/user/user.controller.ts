@@ -36,7 +36,8 @@ export class UserController {
   @Get(':id')
   @ApiOkResponse({ type: MinimalUserDto })
   getUser(
-    @Param('id', ParseIntPipe) userId: number,
+    @Param('id', ParseIntPipe)
+    userId: number,
   ) {
     return this.userService.getUser(userId);
   }

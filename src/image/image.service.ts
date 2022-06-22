@@ -77,7 +77,7 @@ export class ImageService {
       orderBy,
       select,
     } = params;
-    return this.prisma.post.findMany({
+    return this.prisma.image.findMany({
       skip,
       take,
       cursor,

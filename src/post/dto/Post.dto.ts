@@ -6,6 +6,8 @@ import {
 } from '@prisma/client';
 import {
   IsDateString,
+  IsNumber,
+  IsNumberString,
   Matches,
 } from 'class-validator';
 
@@ -18,6 +20,7 @@ export class PostDto {
   title: string;
   summary: string;
   content: object;
+
   userId: number;
   @IsDateString()
   createdAt: Date;

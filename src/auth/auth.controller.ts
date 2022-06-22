@@ -13,6 +13,7 @@ import {
   ApiResponse,
   ApiCreatedResponse,
   ApiBadRequestResponse,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
@@ -33,6 +34,9 @@ import {
   ApiCookieAuth,
 } from '@nestjs/swagger';
 import { GetUser } from './decorator/index.js';
+import { LoggedInDto } from './dto/loggedin.dto.js';
+import { UserDto } from './dto/User.dto.js';
+import { IsAdminDto } from './dto/isAdmin.dto.js';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -55,7 +59,8 @@ export class AuthController {
   @ApiBadRequestResponse({
     description: 'Credentials taken',
   })
-  @UseGuards(RecaptchaGuard)
+  @ApiOkResponse({ type: UserDto })
+  // @UseGuards(RecaptchaGuard)
   @Post('register')
   async signup(@Body() dto: AuthDto) {
     return this.authService.signup(dto);
@@ -68,12 +73,14 @@ export class AuthController {
 
   // @UseGuards(SessionGuard)
   @ApiCookieAuth()
+  @ApiOkResponse({ type: LoggedInDto })
   @Get('loggedIn')
   async loggedIn(@Req() req) {
     return { loggedIn: !!req.user };
   }
 
   @Get('isAdmin')
+  @ApiOkResponse({ type: IsAdminDto })
   @ApiCookieAuth()
   async isAdmin(
     @Req() req,

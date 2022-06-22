@@ -28,6 +28,7 @@ import { GetPostWithUserDto } from './dto/GetPostWithUser.dto.js';
 import { MinimalPostDto } from './dto/MinimalPost.dto.js';
 import { CreatePostDto } from './dto/CreatePost.dto.js';
 import { EditPostDto } from './dto/EditPost.dto.js';
+import { PostDto } from './dto/Post.dto.js';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -73,7 +74,6 @@ export class PostController {
   @ApiOkResponse({
     type: [MinimalPostDto],
   })
-  @Roles('ADMIN')
   @Get('me')
   getMyPosts(
     @GetUser('id') userId: number,
@@ -129,7 +129,8 @@ export class PostController {
   @Get(':id')
   @ApiOkResponse({ type: GetPostWithUserDto })
   getPostById(
-    @Param('id') postId: number,
+    @Param('id', ParseIntPipe)
+    postId: number,
     @GetUser('id') userId: number,
   ) {
     return this.postService.getPostById(
@@ -142,7 +143,7 @@ export class PostController {
   @Get('slug/:slug')
   @ApiOkResponse({ type: GetPostWithUserDto })
   getPostBySlug(
-    @Param('slug') postSlug: string,
+    @Param('slug') postSlug: PostDto['slug'],
     @GetUser('id') userId: number,
   ) {
     return this.postService.getPostBySlug(
@@ -159,7 +160,8 @@ export class PostController {
   @Patch(':id')
   editPostById(
     @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) postId: number,
+    @Param('id', ParseIntPipe)
+    postId: number,
     @Body() dto: EditPostDto,
   ) {
     return this.postService.editPostById(
@@ -177,7 +179,8 @@ export class PostController {
   @Delete(':id')
   deletePostById(
     @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) postId: number,
+    @Param('id', ParseIntPipe)
+    postId: number,
   ) {
     return this.postService.deletePostById(
       userId,

@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Role, User } from '@prisma/client';
-import {
-  IsNumber,
-  IsNumberString,
-} from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class UserDto {
+  @IsNumber()
   id: number;
   name?: string;
   createdAt: Date;

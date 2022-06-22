@@ -7,6 +7,7 @@ import {
   Post,
   Prisma,
 } from '@prisma/client';
+import { IsNumber } from 'class-validator';
 import { PostDto } from './Post.dto';
 
 class AdditionalUserInfo {
