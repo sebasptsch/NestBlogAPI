@@ -4,7 +4,10 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import {
   SitemapStream,
@@ -24,6 +27,7 @@ export class SitemapController {
     private readonly prismaService: PrismaService,
   ) {}
   @Get('sitemap.xml')
+  @ApiOperation({ operationId: 'getSitemap' })
   async getSitemap(
     @Res() res: Response,
     @Req() req: Request,

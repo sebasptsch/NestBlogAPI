@@ -21,6 +21,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   OmitType,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator.js';
 import { GetPostsDto } from './dto/getPostsInput.dto.js';
@@ -36,8 +37,10 @@ export class PostController {
   constructor(private postService: PostService) {}
 
   /** Get a list of posts (if you're logged in then you get your own draft posts as well) */
+
   @Get()
   @ApiOkResponse({ type: [MinimalPostDto] })
+  @ApiOperation({ operationId: 'getPosts' })
   getPosts(
     @Query() { take, cursor }: GetPostsDto,
   ) {
@@ -71,6 +74,7 @@ export class PostController {
   /** Get a list of posts belonging to the logged in user */
   @UseGuards(SessionGuard)
   @ApiCookieAuth()
+  @ApiOperation({ operationId: 'getMyPosts' })
   @ApiOkResponse({
     type: [MinimalPostDto],
   })
@@ -109,6 +113,7 @@ export class PostController {
 
   /** Create a new post */
   @UseGuards(SessionGuard)
+  @ApiOperation({ operationId: 'createPost' })
   @ApiCookieAuth()
   @ApiCreatedResponse({
     type: GetPostWithUserDto,
@@ -127,6 +132,7 @@ export class PostController {
 
   /** Get a post by it's Id */
   @Get(':id')
+  @ApiOperation({ operationId: 'getPostById' })
   @ApiOkResponse({ type: GetPostWithUserDto })
   getPostById(
     @Param('id', ParseIntPipe)
@@ -141,6 +147,7 @@ export class PostController {
 
   /** Retreive a post by it's Slug */
   @Get('slug/:slug')
+  @ApiOperation({ operationId: 'getPostBySlug' })
   @ApiOkResponse({ type: GetPostWithUserDto })
   getPostBySlug(
     @Param('slug') postSlug: PostDto['slug'],
@@ -155,6 +162,7 @@ export class PostController {
   /** Edit a post */
   @UseGuards(SessionGuard)
   @ApiCookieAuth()
+  @ApiOperation({ operationId: 'editPostById' })
   @ApiOkResponse({ type: GetPostWithUserDto })
   @Roles('ADMIN')
   @Patch(':id')
@@ -174,6 +182,7 @@ export class PostController {
   /** Delete a post */
   @UseGuards(SessionGuard)
   @ApiCookieAuth()
+  @ApiOperation({ operationId: 'deletePostById' })
   @ApiOkResponse({ type: GetPostWithUserDto })
   @Roles('ADMIN')
   @Delete(':id')

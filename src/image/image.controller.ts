@@ -33,6 +33,7 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import {
   ApiTags,
@@ -56,6 +57,7 @@ export class ImageController {
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @ApiConsumes('multipart/form-data')
+  @ApiOperation({ operationId: 'addImage' })
   @ApiCreatedResponse({
     type: ImageDto,
   })
@@ -90,6 +92,7 @@ export class ImageController {
   @ApiOkResponse({
     description: 'Returns the image file itself',
   })
+  @ApiOperation({ operationId: 'getImage' })
   async getImage(
     @Param('id', ParseIntPipe)
     id: number,
@@ -113,6 +116,7 @@ export class ImageController {
   @ApiCookieAuth()
   @Roles('ADMIN')
   @UseGuards(SessionGuard)
+  @ApiOperation({ operationId: 'getImages' })
   @ApiOkResponse({ type: [ImageDto] })
   @Get()
   async getImages(
@@ -134,6 +138,7 @@ export class ImageController {
   /** Delete an image by it's id */
   @ApiCookieAuth()
   @Roles('ADMIN')
+  @ApiOperation({ operationId: 'deleteImage' })
   @UseGuards(SessionGuard)
   @ApiOkResponse({ type: ImageDto })
   @Delete(':id')

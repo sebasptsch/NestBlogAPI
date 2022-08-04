@@ -14,6 +14,7 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiOkResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
@@ -46,6 +47,7 @@ export class AuthController {
   /** Log out of the logged in account */
   @UseGuards(SessionGuard)
   @ApiResponse({ status: 201 })
+  @ApiOperation({ operationId: 'logout' })
   @ApiCookieAuth()
   @Post('logout')
   async logout(@Req() request: Request) {
@@ -56,6 +58,7 @@ export class AuthController {
   @ApiCreatedResponse({
     description: 'Successfully created user',
   })
+  @ApiOperation({ operationId: 'register' })
   @ApiBadRequestResponse({
     description: 'Credentials taken',
   })
@@ -68,12 +71,14 @@ export class AuthController {
 
   /** Sign in to an existing local account */
   @UseGuards(LocalAuthGuard, RecaptchaGuard)
+  @ApiOperation({ operationId: 'signin' })
   @Post('signin')
   async signin(@Body() dto: AuthDto) {}
 
   // @UseGuards(SessionGuard)
   @ApiCookieAuth()
   @ApiOkResponse({ type: LoggedInDto })
+  @ApiOperation({ operationId: 'loggedIn' })
   @Get('loggedIn')
   async loggedIn(@Req() req) {
     return { loggedIn: !!req.user };
@@ -81,6 +86,7 @@ export class AuthController {
 
   @Get('isAdmin')
   @ApiOkResponse({ type: IsAdminDto })
+  @ApiOperation({ operationId: 'isAdmin' })
   @ApiCookieAuth()
   async isAdmin(
     @Req() req,
@@ -92,10 +98,14 @@ export class AuthController {
   /** Sign in using github */
   @UseGuards(GithubAuthGuard)
   @Get('github')
+  @ApiOperation({ operationId: 'githubSignIn' })
   githubSignIn() {}
 
   /** Sign in using github (callback) */
   @UseGuards(GithubAuthGuard)
+  @ApiOperation({
+    operationId: 'githubSignInCallback',
+  })
   @Get('github/callback')
   async githubSignInCallback() {
     return '<script>window.close();</script >';
@@ -103,11 +113,15 @@ export class AuthController {
 
   /** Sign in using discord */
   @UseGuards(DiscordAuthGuard)
+  @ApiOperation({ operationId: 'discordSignIn' })
   @Get('discord')
   discordSignIn() {}
 
   /** Sign in using discord (callback) */
   @UseGuards(DiscordAuthGuard)
+  @ApiOperation({
+    operationId: 'discordSignInCallback',
+  })
   @Get('discord/callback')
   async discordSignInCallback() {
     return '<script>window.close();</script >';

@@ -15,6 +15,7 @@ import { UserService } from './user.service.js';
 import {
   ApiCookieAuth,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { UserDto } from './dto/User.dto.js';
@@ -28,6 +29,7 @@ export class UserController {
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @Get('me')
+  @ApiOperation({ operationId: 'getMe' })
   @ApiOkResponse({ type: UserDto })
   getMe(@GetUser('id') id: number) {
     return this.userService.getPrivateUser(id);
@@ -35,6 +37,7 @@ export class UserController {
 
   @Get(':id')
   @ApiOkResponse({ type: MinimalUserDto })
+  @ApiOperation({ operationId: 'getUser' })
   getUser(
     @Param('id', ParseIntPipe)
     userId: number,
@@ -45,6 +48,7 @@ export class UserController {
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
   @ApiOkResponse({ type: UserDto })
+  @ApiOperation({ operationId: 'editUser' })
   @Patch()
   editUser(
     @GetUser('id') userId: number,
@@ -55,6 +59,7 @@ export class UserController {
 
   @ApiCookieAuth()
   @UseGuards(SessionGuard)
+  @ApiOperation({ operationId: 'deleteUser' })
   @ApiOkResponse({ type: UserDto })
   @Delete('me')
   deleteUser(@GetUser('id') userId: number) {
