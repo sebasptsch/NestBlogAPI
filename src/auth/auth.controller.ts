@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
-import { Request, Response } from 'express';
 import passport from 'passport';
 import { AuthService } from './auth.service.js';
 import { AuthDto } from './dto/index.js';
@@ -38,6 +37,7 @@ import { GetUser } from './decorator/index.js';
 import { LoggedInDto } from './dto/loggedin.dto.js';
 import { UserDto } from './dto/User.dto.js';
 import { IsAdminDto } from './dto/isAdmin.dto.js';
+import { Request } from 'express';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -123,7 +123,9 @@ export class AuthController {
     operationId: 'discordSignInCallback',
   })
   @Get('discord/callback')
-  async discordSignInCallback() {
+  async discordSignInCallback(
+    @Req() req: Request,
+  ) {
     return '<script>window.close();</script >';
   }
 }

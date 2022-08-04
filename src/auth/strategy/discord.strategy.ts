@@ -34,7 +34,7 @@ export class DiscordStrategy extends PassportStrategy(
   }
 
   async validate(
-    req,
+    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: Profile,
