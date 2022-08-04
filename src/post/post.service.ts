@@ -2,6 +2,8 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import {
   DraftStatus,
@@ -16,6 +18,8 @@ import { EditPostDto } from './dto/EditPost.dto.js';
 @Injectable()
 export class PostService {
   constructor(private prisma: PrismaService) {}
+
+  private logger = new Logger(PostService.name);
   // get all posts
   async post(params: {
     where: Prisma.PostWhereInput;
@@ -89,6 +93,8 @@ export class PostService {
           );
         }
       }
+      this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 
