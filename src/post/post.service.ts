@@ -66,7 +66,6 @@ export class PostService {
       const post = await this.prisma.post.create({
         data: {
           ...dto,
-
           user: {
             connect: { id: userId },
           },
