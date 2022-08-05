@@ -3,7 +3,6 @@ import {
   IsNumber,
   IsString,
 } from 'class-validator';
-import type fs from 'fs';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LocalFileDto {
