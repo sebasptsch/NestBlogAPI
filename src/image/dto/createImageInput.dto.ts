@@ -11,6 +11,7 @@ export class LocalFileDto {
     type: 'string',
     format: 'binary',
   })
+  @IsNotEmpty()
   file: any;
   @IsNotEmpty()
   @IsString()
