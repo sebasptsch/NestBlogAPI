@@ -20,5 +20,5 @@ export class CreatePostDto {
   @IsObject()
   content: object;
   @IsDateString()
-  createdAt: Date;
+  publishedAt: Date;
 }
