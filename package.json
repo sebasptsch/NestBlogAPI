@@ -38,6 +38,7 @@
     "studio:dev": "dotenv -e .env -- prisma studio"
   },
   "dependencies": {
+    "@casl/ability": "^6.0.0",
     "@nestjs/axios": "^0.1.0",
     "@nestjs/common": "^9.0.8",
     "@nestjs/config": "^2.0.0",
