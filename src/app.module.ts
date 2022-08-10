@@ -19,7 +19,6 @@ import { SitemapService } from './sitemap/sitemap.service';
 import { SitemapController } from './sitemap/sitemap.controller';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { join } from 'path';
-import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -31,7 +30,6 @@ import { CaslModule } from './casl/casl.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ImageModule,
     SitemapModule,
-    CaslModule,
   ],
   controllers: [],
   providers: [

@@ -12,6 +12,7 @@ import {
   SwaggerModule,
   DocumentBuilder,
 } from '@nestjs/swagger';
+import { AppClusterService } from './app-cluster.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(
@@ -81,4 +82,4 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
-bootstrap();
+AppClusterService.clusterize(bootstrap);
