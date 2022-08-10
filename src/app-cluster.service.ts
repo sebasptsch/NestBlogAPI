@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
-const numCPUs = os.cpus().length;
+const numCPUs = 1; // os.cpus().length
 
 @Injectable()
 export class AppClusterService {

@@ -13,6 +13,7 @@ import {
   DocumentBuilder,
 } from '@nestjs/swagger';
 import { AppClusterService } from './app-cluster.service';
+import swStats from 'swagger-stats';
 
 async function bootstrap() {
   const app = await NestFactory.create(
@@ -79,6 +80,12 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: "Seb's Blog API Reference",
   });
+
+  app.use(
+    swStats.getMiddleware({
+      swaggerSpec: document,
+    }),
+  );
 
   await app.listen(3000);
 }
