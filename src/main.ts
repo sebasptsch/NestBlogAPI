@@ -51,6 +51,9 @@ async function bootstrap() {
       store: new redisStore({
         client: redisClient,
       }),
+      cookie: {
+        domain: 'sebasptsch.dev',
+      },
     }),
   );
   app.use(passport.initialize());
