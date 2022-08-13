@@ -23,6 +23,8 @@ async function bootstrap() {
         origin: [
           'https://blog-frontend-virid.vercel.app',
           'https://hoppscotch.io',
+          'https://www.sebasptsch.dev',
+          'https://sebasptsch.dev',
         ],
         allowedHeaders:
           'X-Requested-With,Content-Type',
