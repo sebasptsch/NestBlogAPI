@@ -102,13 +102,14 @@ export class AuthController {
   githubSignIn() {}
 
   /** Sign in using github (callback) */
+  @Redirect('https://www.sebasptsch.dev/profile')
   @UseGuards(GithubAuthGuard)
   @ApiOperation({
     operationId: 'githubSignInCallback',
   })
   @Get('github/callback')
   async githubSignInCallback() {
-    return '<script>window.close();</script >';
+    // return '<script>window.close();</script >';
   }
 
   /** Sign in using discord */
@@ -118,6 +119,7 @@ export class AuthController {
   discordSignIn() {}
 
   /** Sign in using discord (callback) */
+  @Redirect('https://www.sebasptsch.dev/profile')
   @UseGuards(DiscordAuthGuard)
   @ApiOperation({
     operationId: 'discordSignInCallback',
@@ -125,7 +127,5 @@ export class AuthController {
   @Get('discord/callback')
   async discordSignInCallback(
     @Req() req: Request,
-  ) {
-    return '<script>window.close();</script >';
-  }
+  ) {}
 }
