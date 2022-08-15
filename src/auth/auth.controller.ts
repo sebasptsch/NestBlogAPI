@@ -102,7 +102,7 @@ export class AuthController {
   githubSignIn() {}
 
   /** Sign in using github (callback) */
-  @Redirect('https://www.sebasptsch.dev/profile')
+  @Redirect('https://sebasptsch.dev/profile')
   @UseGuards(GithubAuthGuard)
   @ApiOperation({
     operationId: 'githubSignInCallback',
@@ -119,7 +119,7 @@ export class AuthController {
   discordSignIn() {}
 
   /** Sign in using discord (callback) */
-  @Redirect('https://www.sebasptsch.dev/profile')
+  @Redirect('https://sebasptsch.dev/profile')
   @UseGuards(DiscordAuthGuard)
   @ApiOperation({
     operationId: 'discordSignInCallback',
